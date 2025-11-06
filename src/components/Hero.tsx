@@ -5,7 +5,7 @@ import heroBg from "@/assets/hero-bg.jpg";
 
 const Hero = () => {
   const [text, setText] = useState("");
-  const fullText = "Backend Developer | MERN + TypeScript Enthusiast | AI & System Design Explorer";
+  const fullText = "Backend Developer | Machine Learning Engineer | MERN + TypeScript Enthusiast";
   
   useEffect(() => {
     let index = 0;
