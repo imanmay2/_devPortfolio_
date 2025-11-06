@@ -1,24 +1,29 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Github, Linkedin, Mail, Download, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroBg from "@/assets/hero-bg.jpg";
 
 const Hero = () => {
-  const [text, setText] = useState("");
-  const fullText = "Backend Developer | Machine Learning Engineer | MERN + TypeScript Enthusiast";
+  const phrases = [
+    "Backend Developer",
+    "Machine Learning Engineer",
+    "MERN Stack Developer",
+    "TypeScript Enthusiast",
+    "AI & System Design Explorer",
+    "GoLang Developer",
+    "Full Stack Engineer",
+    "Cloud Architecture Specialist",
+  ];
+  
+  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
   
   useEffect(() => {
-    let index = 0;
-    const timer = setInterval(() => {
-      if (index <= fullText.length) {
-        setText(fullText.slice(0, index));
-        index++;
-      } else {
-        clearInterval(timer);
-      }
-    }, 50);
+    const interval = setInterval(() => {
+      setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length);
+    }, 3000);
     
-    return () => clearInterval(timer);
+    return () => clearInterval(interval);
   }, []);
 
   const scrollToSection = (id: string) => {
@@ -44,15 +49,32 @@ const Hero = () => {
       {/* Content */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="animate-fade-in">
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6">
+          <motion.h1
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, type: "spring" }}
+            className="text-5xl sm:text-6xl md:text-7xl font-bold mb-6"
+          >
             <span className="text-gradient">Manmay Chakraborty</span>
-          </h1>
+          </motion.h1>
           
-          <div className="h-16 sm:h-20 mb-8 flex items-center justify-center">
-            <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground">
-              {text}
-              <span className="animate-pulse">|</span>
-            </p>
+          <div className="h-16 sm:h-20 mb-8 flex items-center justify-center overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={currentPhraseIndex}
+                initial={{ y: 50, opacity: 0, rotateX: 90 }}
+                animate={{ y: 0, opacity: 1, rotateX: 0 }}
+                exit={{ y: -50, opacity: 0, rotateX: -90 }}
+                transition={{
+                  duration: 0.6,
+                  type: "spring",
+                  stiffness: 100,
+                }}
+                className="text-lg sm:text-xl md:text-2xl font-semibold glow-text"
+              >
+                {phrases[currentPhraseIndex]}
+              </motion.p>
+            </AnimatePresence>
           </div>
 
           <p className="text-xl sm:text-2xl text-foreground/90 mb-8 max-w-2xl mx-auto">
