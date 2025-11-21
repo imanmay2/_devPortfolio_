@@ -1,11 +1,11 @@
 import { Code2, Rocket, Sparkles } from "lucide-react";
-import profilePlaceholder from "@/assets/profile-placeholder.jpg";
+import profilePlaceholder from "@/assets/me.jpeg";
 
 const About = () => {
   const highlights = [
     { icon: Code2, text: "MERN Stack Specialist" },
-    { icon: Rocket, text: "System Design Expert" },
-    { icon: Sparkles, text: "AI Enthusiast" },
+    { icon: Rocket, text: "Full-Stack Solution Expert" },
+    { icon: Sparkles, text: "ML Enthusiast" },
   ];
 
   return (
@@ -36,8 +36,8 @@ const About = () => {
               </p>
               
               <p className="text-lg text-foreground/80 leading-relaxed">
-                I specialize in <span className="text-accent font-semibold">backend development, API design, and 
-                cloud-native architectures</span> — constantly exploring AI, automation, and GoLang for 
+                I specialize in <span className="text-accent font-semibold">Backend development, API design, and 
+                Full-Stack Solutions</span> — constantly exploring ML, automation, and GoLang for 
                 performance-driven systems.
               </p>
 

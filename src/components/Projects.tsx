@@ -17,7 +17,7 @@ const Projects = () => {
       fullDescription: "Multi-agent AI system automating biomedical data collection and analysis. PharmaMind uses advanced AI models to process research papers, identify drug candidates, and visualize complex pharmaceutical data.",
       image: projectPharmamind,
       tags: ["FastAPI", "LangChain", "GPT-4", "React", "Tailwind"],
-      github: "#",
+      github: "",
       live: "#",
     },
     {

@@ -7,13 +7,12 @@ import heroBg from "@/assets/hero-bg.jpg";
 const Hero = () => {
   const phrases = [
     "Backend Developer",
-    "Machine Learning Engineer",
+    "Machine Learning Enthusiast",
     "MERN Stack Developer",
     "TypeScript Enthusiast",
     "AI & System Design Explorer",
     "GoLang Developer",
     "Full Stack Engineer",
-    "Cloud Architecture Specialist",
   ];
   
   const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
