@@ -100,7 +100,7 @@ const Hero = () => {
 
           <div className="flex justify-center space-x-6">
             <a
-              href="https://github.com"
+              href="https://github.com/imanmay2"
               target="_blank"
               rel="noopener noreferrer"
               className="text-foreground/70 hover:text-primary transition-colors hover-glow p-3 rounded-full"
@@ -108,7 +108,7 @@ const Hero = () => {
               <Github className="h-6 w-6" />
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://linkedin.com/in/imanmay2"
               target="_blank"
               rel="noopener noreferrer"
               className="text-foreground/70 hover:text-primary transition-colors hover-glow p-3 rounded-full"
@@ -116,7 +116,7 @@ const Hero = () => {
               <Linkedin className="h-6 w-6" />
             </a>
             <a
-              href="mailto:contact@example.com"
+              href="mailto:imanmay2@gmail.com"
               className="text-foreground/70 hover:text-primary transition-colors hover-glow p-3 rounded-full"
             >
               <Mail className="h-6 w-6" />
