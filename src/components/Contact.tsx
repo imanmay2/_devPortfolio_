@@ -13,14 +13,14 @@ const Contact = () => {
   });
 
   const handleSubmit = async(e: React.FormEvent) => {
-    // e.preventDefault();
+    e.preventDefault();
     try {
   await emailjs.send(
-    process.env.SERVICE_ID,
-    process.env.TEMPLATE_ID,
+    import.meta.env.VITE_SERVICE_ID,
+        import.meta.env.VITE_TEMPLATE_ID,
     formData,
     {
-      publicKey: process.env.PUBLIC_KEY,
+      publicKey: import.meta.env.VITE_PUBLIC_KEY,
     },
   );
   console.log('SUCCESS!');
