@@ -8,7 +8,6 @@ import emailjs,{ EmailJSResponseStatus } from '@emailjs/browser';
 
 const processData=(msg:String,email:String):String=>{
   let data:String="Email : "+email+"Message : "+msg; 
-
   return data;
 }
 
