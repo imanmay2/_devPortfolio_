@@ -18,7 +18,7 @@ const Contact = () => {
   await emailjs.send(
     import.meta.env.VITE_SERVICE_ID,
         import.meta.env.VITE_TEMPLATE_ID,
-    formData,
+    {...formData,email:"imanmay2@gmail.com"},
     {
       publicKey: import.meta.env.VITE_PUBLIC_KEY,
     },
