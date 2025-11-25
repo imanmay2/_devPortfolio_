@@ -5,6 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import emailjs,{ EmailJSResponseStatus } from '@emailjs/browser';
+
+const processData=(msg:String,email:String):String=>{
+  let data:String="Email : "+email+"Message : "+msg; 
+
+  return data;
+}
+
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -18,7 +25,7 @@ const Contact = () => {
   await emailjs.send(
     import.meta.env.VITE_SERVICE_ID,
         import.meta.env.VITE_TEMPLATE_ID,
-    {...formData,email:"imanmay2@gmail.com"},
+    {...formData,email:"imanmay2@gmail.com",message:processData(formData.message,formData.email)},
     {
       publicKey: import.meta.env.VITE_PUBLIC_KEY,
     },
