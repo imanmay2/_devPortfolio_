@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-
+import emailjs,{ EmailJSResponseStatus } from '@emailjs/browser';
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -12,8 +12,27 @@ const Contact = () => {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async(e: React.FormEvent) => {
+    // e.preventDefault();
+    try {
+  await emailjs.send(
+    process.env.SERVICE_ID,
+    process.env.TEMPLATE_ID,
+    formData,
+    {
+      publicKey: process.env.PUBLIC_KEY,
+    },
+  );
+  console.log('SUCCESS!');
+  setFormData({name:"",email:"",message:""});
+} catch (err) {
+  if (err instanceof EmailJSResponseStatus) {
+    console.log('EMAILJS FAILED...', err);
+    return;
+  }
+
+  console.log('ERROR', err);
+}
     toast.success("Message sent! I'll get back to you soon.");
     setFormData({ name: "", email: "", message: "" });
   };
