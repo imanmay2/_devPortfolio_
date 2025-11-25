@@ -2,10 +2,10 @@ import { useState } from "react";
 import { ExternalLink, Github, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import projectPharmamind from "@/assets/project-pharmamind.jpeg";
-import projectWanderlust from "@/assets/project-wanderlust.jpeg";
-import projectQnex from "@/assets/project-qnex.jpeg";
-import projectTwitinbook from "@/assets/project-twitinbook.jpeg";
+import projectPharmamind from "@/assets/project-pharmamind.png";
+// import projectWanderlust from "@/assets/project-wanderlust.png";
+// import projectQnex from "@/assets/project-qnex.png";
+// import projectTwitinbook from "@/assets/project-twitinbook.png";
 
 const Projects = () => {
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
