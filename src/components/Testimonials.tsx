@@ -4,29 +4,23 @@ import { Quote } from "lucide-react";
 const Testimonials = () => {
   const testimonials = [
     {
-      name: "Rahul Sharma",
-      role: "Senior Backend Engineer, Tech Corp",
-      content: "Manmay's expertise in backend architecture and his ability to optimize complex systems is remarkable. His work on our API infrastructure reduced response times by 40%.",
+      name: "Sri Vatsan",
+      role: "Techical Lead @ E-Cell VIT Chennai",
+      content: "Working with Manmay as the team lead was a fruitful experience. He is adaptable to different kinds of work, and prioritises learning while ensuring deadlines are met. He is a team player, and manages to produce satisfactory deliverables",
       image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul",
     },
     {
-      name: "Priya Menon",
-      role: "CTO, StartupHub",
-      content: "Working with Manmay was a game-changer for our project. His deep understanding of GoLang and microservices helped us scale seamlessly from 1K to 100K users.",
+      name: "Dr Soumadeep Choudhury",
+      role: "MBBS Student @NBMC,WB",
+      content: "Manmay is a self-driven and technically skilled collaborator who consistently demonstrates a strong attitude to solve complex problems. His growth mindset and proactive approach inspire confidence in every project. Working with him has been a great experience due to his dedication and positive problem-solving spirit.",
       image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya",
     },
     {
-      name: "David Chen",
-      role: "ML Lead, AI Solutions",
-      content: "Manmay's work on PharmaMind showcases his incredible talent in integrating AI with robust backend systems. His code quality and documentation are top-notch.",
+      name: "Pranay Gupta",
+      role: "Management Director @ E-Cell VIT Chennai.",
+      content: "It was a cheerful experience working with Manmay on building PharmaMind. His enthusiasm, strong work ethic, and commitment made it possible to transform our idea into a well-structured and presentable project. His development skills played a key role in bringing everything together.",
       image: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
-    },
-    {
-      name: "Anjali Verma",
-      role: "Project Manager, Cestrum Tech",
-      content: "Manmay is not just technically brilliant but also a great team player. His contributions to our backend systems have been invaluable and his problem-solving skills are exceptional.",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Anjali",
-    },
+    }
   ];
 
   const container = {
