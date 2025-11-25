@@ -17,7 +17,7 @@ const Projects = () => {
       fullDescription: "Multi-agent AI system automating biomedical data collection and analysis. PharmaMind uses advanced AI models to process research papers, identify drug candidates, and visualize complex pharmaceutical data.",
       image: projectPharmamind,
       tags: ["FastAPI", "LangChain", "GPT-4", "React", "Tailwind"],
-      github: "",
+      github: "https://github.com/imanmay2/PharmaMind",
       live: "#",
     },
     {
@@ -26,7 +26,7 @@ const Projects = () => {
       fullDescription: "Full-featured backend-focused Airbnb clone with authentication, property listings, booking system, and user management. Built with modern backend technologies and RESTful API design.",
       image: projectWanderlust,
       tags: ["Node.js", "Express.js", "MongoDB", "EJS"],
-      github: "#",
+      github: "https://github.com/imanmay2/wander_lust",
       live: "#",
     },
     {
@@ -35,7 +35,7 @@ const Projects = () => {
       fullDescription: "Intelligent MCQ platform generating personalized quizzes based on user preferences. Features adaptive difficulty, real-time scoring, and comprehensive analytics dashboard.",
       image: projectQnex,
       tags: ["React.js", "MongoDB", "Node.js", "Express.js"],
-      github: "#",
+      github: "https://github.com/imanmay2/QNeX",
       live: "#",
     },
     {
@@ -44,7 +44,7 @@ const Projects = () => {
       fullDescription: "Secure, minimal social application for expressing ideas anywhere. Features include real-time posts, user authentication, and a clean, intuitive interface focused on content.",
       image: projectTwitinbook,
       tags: ["Node.js", "Express.js", "MySQL", "MongoDB"],
-      github: "#",
+      github: "https://github.com/imanmay2/TwitInBook",
       live: "#",
     },
   ];
