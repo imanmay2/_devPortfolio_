@@ -12,7 +12,7 @@ const Testimonials = () => {
     {
       name: "Dr Soumadeep Choudhury",
       role: "MBBS Student @NBMC,WB",
-      content: "Manmay is a self-driven and technically skilled collaborator who consistently demonstrates a strong attitude to solve complex problems. His growth mindset and proactive approach inspire confidence in every project. Working with him has been a great experience due to his dedication and positive problem-solving spirit.",
+      content: "I am Soumadeep, and I have collaborated with Manmay since 2021. He consistently shows strong ownership, clear communication, and a proactive attitude. His technical skills and maturity in handling challenges make him a valuable team member.",
       image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya",
     },
     {

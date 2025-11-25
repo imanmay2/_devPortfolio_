@@ -104,7 +104,7 @@ const Projects = () => {
                       <Github className="mr-2 h-4 w-4" />
                       Code
                     </Button>
-                    <Button
+                    {/* <Button
                       size="sm"
                       className="hover-glow"
                       onClick={(e) => {
@@ -114,7 +114,7 @@ const Projects = () => {
                     >
                       <ExternalLink className="mr-2 h-4 w-4" />
                       Live Demo
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
               </div>
