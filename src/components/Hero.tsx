@@ -11,7 +11,6 @@ const Hero = () => {
     "MERN Stack Developer",
     "TypeScript Enthusiast",
     "AI & System Design Explorer",
-    "GoLang Developer",
     "Full Stack Engineer",
   ];
   
@@ -88,6 +87,8 @@ const Hero = () => {
             >
               View Projects
             </Button>
+
+            <a href="/resume.pdf" download>
             <Button
               size="lg"
               variant="outline"
@@ -95,7 +96,7 @@ const Hero = () => {
             >
               <Download className="mr-2 h-5 w-5" />
               Download Resume
-            </Button>
+            </Button></a>
           </div>
 
           <div className="flex justify-center space-x-6">
