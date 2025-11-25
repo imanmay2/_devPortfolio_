@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import projectPharmamind from "@/assets/project-pharmamind.png";
 import projectWanderlust from "@/assets/project-wanderlust.png";
-// import projectQnex from "@/assets/project-qnex.png";
+import projectQnex from "@/assets/project-qnex.png";
 // import projectTwitinbook from "@/assets/project-twitinbook.png";
 
 const Projects = () => {
