@@ -1,25 +1,27 @@
 import { motion } from "framer-motion";
 import { Quote } from "lucide-react";
 
+
 const Testimonials = () => {
   const testimonials = [
     {
-      name: "Sri Vatsan",
-      role: "Techical Lead @ E-Cell VIT Chennai",
+      name: "Sasank V",
+      role: "Web Dev Lead @CodeChef VIT-Chennai",
+      content: "Manmay is a proactive and committed backend developer who consistently delivers high-quality work. He takes ownership of the tasks assigned to him and follows through with dedication. His reliability and problem-solving mindset make him a strong contributor to any team.",
+      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya",
+    },
+    {
+      name: "V SriVatsan",
+      role: "Techical Lead @E-Cell VIT Chennai",
       content: "Working with Manmay as the team lead was a fruitful experience. He is adaptable to different kinds of work, and prioritises learning while ensuring deadlines are met. He is a team player, and manages to produce satisfactory deliverables",
       image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul",
     },
-    {
-      name: "Dr Soumadeep Choudhury",
-      role: "MBBS Student @NBMC,WB",
-      content: "I am Soumadeep, and I have collaborated with Manmay since 2021. He consistently shows strong ownership, clear communication, and a proactive attitude. His technical skills and maturity in handling challenges make him a valuable team member.",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya",
-    },
+    
     {
       name: "Pranay Gupta",
       role: "Management Director @ E-Cell VIT Chennai.",
       content: "It was a cheerful experience working with Manmay on building PharmaMind. His enthusiasm, strong work ethic, and commitment made it possible to transform our idea into a well-structured and presentable project. His development skills played a key role in bringing everything together.",
-      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
+      image: "https://api.dicebear.com/7.x/avataaars/svg?seed=Raja",
     }
   ];
 
