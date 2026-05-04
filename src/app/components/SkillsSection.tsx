@@ -89,55 +89,57 @@ const techStackCount = new Set(skillRows.flatMap((row) => row.skills.map((skill)
 
 type Skill = (typeof skillRows)[number]['skills'][number];
 
-function SkillCard({ skill }: { skill: Skill }) {
+function SkillPill({ skill }: { skill: Skill }) {
   return (
     <motion.div
-      className="mx-3 w-[210px] shrink-0 border border-white/10 bg-[#101322]/90 p-5 shadow-2xl shadow-black/30 backdrop-blur-xl transition-colors duration-300 hover:border-cyan-300/40 hover:bg-white/[0.07] sm:w-[240px]"
-      whileHover={{ y: -8, scale: 1.025 }}
-      transition={{ type: 'spring', stiffness: 280, damping: 20 }}
+      whileHover={{ y: -4, scale: 1.02 }}
+      transition={{ type: 'spring', stiffness: 320, damping: 22 }}
+      className="group mx-2 flex h-[68px] w-[178px] shrink-0 items-center gap-3 border border-white/10 bg-white/[0.04] px-3 py-2 shadow-lg shadow-black/20 backdrop-blur-xl transition-colors duration-300 hover:border-cyan-300/35 hover:bg-white/[0.07] sm:w-[198px]"
     >
-      <div className="mb-8 flex items-start justify-between gap-4">
-        <div className={`flex h-16 w-16 items-center justify-center bg-gradient-to-br ${skill.color} text-[#070913] shadow-lg shadow-black/25`}>
-          <skill.Icon className="h-8 w-8" strokeWidth={2.2} />
-        </div>
-        <span className="border border-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-white/42">
-          {skill.detail}
-        </span>
+      <div className={`flex h-10 w-10 shrink-0 items-center justify-center bg-gradient-to-br ${skill.color} text-[#070913] shadow-md shadow-black/25`}>
+        <skill.Icon className="h-5 w-5" strokeWidth={2.3} />
       </div>
-
-      <h3 className="text-2xl font-black tracking-tight text-white">{skill.name}</h3>
-      <div className={`mt-6 h-1 w-24 bg-gradient-to-r ${skill.color}`} />
+      <div className="min-w-0">
+        <h3 className="truncate text-sm font-black tracking-tight text-white sm:text-base">{skill.name}</h3>
+        <p className="mt-0.5 truncate text-[10px] font-bold uppercase tracking-[0.16em] text-white/40">{skill.detail}</p>
+      </div>
     </motion.div>
   );
 }
 
-function SkillMarquee({
-  row,
-  index,
-}: {
-  row: (typeof skillRows)[number];
-  index: number;
-}) {
+function SkillLane({ row, rowIndex }: { row: (typeof skillRows)[number]; rowIndex: number }) {
   const repeatedSkills = [...row.skills, ...row.skills, ...row.skills];
   const reverse = row.direction === 'right';
 
   return (
-    <div className="relative">
-      <div className="mb-4 flex items-center gap-4 px-2">
-        <span className="h-px w-10 bg-gradient-to-r from-cyan-300/0 to-cyan-300/60" />
-        <p className="text-xs font-black uppercase tracking-[0.28em] text-white/45">{row.label}</p>
+    <div className="relative overflow-hidden border border-white/10 bg-[#0f1220]/60 py-3 shadow-xl shadow-black/20 backdrop-blur-xl">
+      <div className="mb-2 flex items-center gap-3 px-4">
+        <p className="shrink-0 text-[10px] font-black uppercase tracking-[0.2em] text-white/45">{row.label}</p>
+        <span className="h-px flex-1 bg-white/10" />
       </div>
-      <div className="skills-marquee relative flex overflow-hidden py-2">
+      <div className="relative flex overflow-hidden">
         <motion.div
           className="flex min-w-max"
           animate={{ x: reverse ? ['-33.333%', '0%'] : ['0%', '-33.333%'] }}
-          transition={{ duration: 30 + index * 4, repeat: Infinity, ease: 'linear' }}
+          transition={{ duration: 24 + rowIndex * 3, repeat: Infinity, ease: 'linear' }}
         >
           {repeatedSkills.map((skill, skillIndex) => (
-            <SkillCard key={`${row.label}-${skill.name}-${skillIndex}`} skill={skill} />
+            <SkillPill key={`${row.label}-${skill.name}-${skillIndex}`} skill={skill} />
           ))}
         </motion.div>
       </div>
+    </div>
+  );
+}
+
+function SkillFrame() {
+  return (
+    <div className="relative -mx-6 space-y-3 overflow-hidden px-6 md:mx-0 md:px-0">
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-[#090a12] to-transparent md:w-28" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-[#090a12] to-transparent md:w-28" />
+      {skillRows.map((row, index) => (
+        <SkillLane key={row.label} row={row} rowIndex={index} />
+      ))}
     </div>
   );
 }
@@ -146,42 +148,37 @@ export function SkillsSection() {
   const { ref, isInView } = useInView();
 
   return (
-    <section id="skills" ref={ref} className="relative overflow-hidden px-6 py-36">
+    <section id="skills" ref={ref} className="relative overflow-hidden px-6 py-20">
       <div className="absolute inset-0 bg-[#090a12]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.10),transparent_34%),radial-gradient(circle_at_70%_55%,rgba(217,70,239,0.08),transparent_28%)]" />
-      <div className="absolute inset-x-0 top-28 h-px bg-gradient-to-r from-transparent via-purple-500/40 to-transparent" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.08),transparent_34%),radial-gradient(circle_at_80%_75%,rgba(217,70,239,0.06),transparent_26%)]" />
 
       <div className="relative z-10 mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 42 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="mb-16 text-center"
+          className="mb-10 text-center"
         >
-          <div className="mb-7 inline-flex items-center gap-4 border border-white/10 bg-white/[0.04] px-5 py-3 shadow-xl shadow-black/25 backdrop-blur-xl">
-            <Sparkles className="h-5 w-5 text-cyan-300" />
-            <span className="text-sm font-black uppercase tracking-[0.24em] text-white/70">Technical Skills</span>
+          <div className="mb-6 inline-flex items-center gap-3 border border-white/10 bg-white/[0.04] px-4 py-2 shadow-xl shadow-black/20 backdrop-blur-xl">
+            <Sparkles className="h-4 w-4 text-cyan-300" />
+            <span className="text-xs font-black uppercase tracking-[0.22em] text-white/70">Technical Skills</span>
           </div>
 
-          <h2 className="text-6xl font-black leading-none tracking-tight md:text-8xl">
+          <h2 className="text-4xl font-black leading-none tracking-tight md:text-5xl">
             <span className="bg-gradient-to-r from-cyan-300 via-emerald-300 to-fuchsia-400 bg-clip-text text-transparent">
               Skills & Expertise
             </span>
           </h2>
-          <p className="mx-auto mt-6 max-w-2xl text-xl text-muted-foreground">
-            Multiple moving lanes of the stack I use across frontend, backend, databases, DevOps, and cloud-native work.
+          <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-muted-foreground md:text-base">
+            A focused stack across frontend, backend, databases, DevOps, and cloud work.
           </p>
 
           <motion.div
-            className="mx-auto mt-8 inline-flex items-end gap-4 border border-cyan-300/20 bg-cyan-300/5 px-7 py-4 shadow-2xl shadow-cyan-950/20"
+            className="mx-auto mt-6 inline-flex items-center gap-3 border border-cyan-300/20 bg-cyan-300/5 px-5 py-2.5 shadow-xl shadow-cyan-950/20"
             whileHover={{ y: -5 }}
           >
-            <span className="text-5xl font-black text-white">{techStackCount}+</span>
-            <span className="pb-2 text-left text-xs font-bold uppercase tracking-[0.26em] text-cyan-200/70">
-              Tech Stack
-              <br />
-              Known
-            </span>
+            <span className="text-2xl font-black text-white">{techStackCount}+</span>
+            <span className="text-left text-xs font-bold uppercase tracking-[0.2em] text-cyan-200/70">Tools Known</span>
           </motion.div>
         </motion.div>
 
@@ -189,13 +186,9 @@ export function SkillsSection() {
           initial={{ opacity: 0, scale: 0.97 }}
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.15 }}
-          className="relative -mx-6 space-y-9"
+          className="relative"
         >
-          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-[#090a12] to-transparent md:w-36" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-[#090a12] to-transparent md:w-36" />
-          {skillRows.map((row, index) => (
-            <SkillMarquee key={row.label} row={row} index={index} />
-          ))}
+          <SkillFrame />
         </motion.div>
       </div>
     </section>

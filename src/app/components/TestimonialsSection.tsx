@@ -1,85 +1,82 @@
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion } from 'motion/react';
 import { Quote, Sparkles, Star } from 'lucide-react';
-import { useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { useInView } from './hooks/useInView';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
 const testimonials = [
   {
-    name: 'Sarah Johnson',
-    role: 'CTO at Tech Innovations',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop',
+    name: 'Sasank V',
+    role: 'Web Development Lead @ CodeChef VIT Chennai Student Chapter',
+    avatar: '/images/manmay-profile.png',
     content:
-      'Manmay is an exceptional developer who consistently delivers high-quality work. His expertise in backend development and Next.js has been invaluable to our team.',
+      'Manmay is a proactive and committed backend developer who consistently delivers high-quality work. He takes ownership of the tasks assigned to him and follows through with dedication. His reliability and problem-solving mindset make him a strong contributor to any team.',
     accent: 'from-cyan-400 to-blue-500',
   },
   {
-    name: 'Michael Chen',
-    role: 'Product Manager at Digital Solutions',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop',
+    name: 'V Srivatsan',
+    role: 'Technical Lead @ E-Cell VIT Chennai',
+    avatar: '/images/manmay-profile.png',
     content:
-      'Working with Manmay has been a pleasure. He has a deep understanding of full-stack development and always finds elegant solutions to complex problems.',
+      'Working with Manmay as the team lead was a fruitful experience. He is adaptable to different kinds of work, and prioritises learning while ensuring deadlines are met. He is a team player, and manages to produce satisfactory deliverables.',
     accent: 'from-emerald-300 to-teal-500',
   },
   {
-    name: 'Emily Rodriguez',
-    role: 'Engineering Lead at Startup Hub',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop',
+    name: 'Pranay Gupta',
+    role: 'Management Lead @ E-Cell VIT Chennai',
+    avatar: '/images/manmay-profile.png',
     content:
-      "Manmay's ability to architect scalable backend systems is outstanding. He's a true professional who brings both technical expertise and leadership to the team.",
+      'It was a cheerful experience working with Manmay on building PharmaMind. His enthusiasm, strong work ethic, and commitment made it possible to transform our idea into a well-structured and presentable project. His development skills played a key role in bringing everything together.',
     accent: 'from-violet-400 to-fuchsia-500',
-  },
-  {
-    name: 'David Kim',
-    role: 'Founder at Code Academy',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop',
-    content:
-      'An incredible talent with a passion for clean code and best practices. Manmay has been instrumental in building our platform from the ground up.',
-    accent: 'from-rose-400 to-orange-500',
   },
 ];
 
 function TestimonialCard({
   testimonial,
-  index,
+  stackIndex,
+  isActive,
 }: {
   testimonial: (typeof testimonials)[number];
-  index: number;
+  stackIndex: number;
+  isActive: boolean;
 }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: cardRef,
-    offset: ['start end', 'end start'],
-  });
-  const y = useTransform(scrollYProgress, [0, 0.5, 1], [80, 0, -42]);
-  const rotate = useTransform(scrollYProgress, [0, 0.5, 1], [index % 2 ? -2.5 : 2.5, 0, index % 2 ? 1.5 : -1.5]);
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.94, 1, 0.98]);
+  const offset = stackIndex * 14;
+  const rotate = stackIndex === 0 ? 0 : stackIndex % 2 ? -1.8 : 1.8;
 
   return (
     <motion.article
-      ref={cardRef}
-      style={{ y, rotate, scale, top: `${88 + index * 18}px` }}
-      initial={{ opacity: 0, x: index % 2 ? 80 : -80 }}
-      whileInView={{ opacity: 1, x: 0 }}
-      viewport={{ once: false, amount: 0.35 }}
-      transition={{ duration: 0.75, ease: 'easeOut' }}
-      className="sticky mb-10 border border-white/10 bg-[#0f1324]/90 p-6 shadow-2xl shadow-black/40 backdrop-blur-2xl md:p-9"
+      layout
+      animate={{
+        x: offset,
+        y: offset,
+        rotate,
+        scale: 1 - stackIndex * 0.03,
+        opacity: stackIndex === 0 ? 1 : 0.55,
+      }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      className="absolute left-0 top-0 h-[calc(100%-36px)] w-[calc(100%-36px)] overflow-hidden border border-white/10 bg-[#0f1324]/95 p-5 shadow-2xl shadow-black/40 backdrop-blur-2xl md:p-8"
+      style={{ zIndex: testimonials.length - stackIndex }}
+      aria-hidden={!isActive}
     >
       <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${testimonial.accent}`} />
-      <Quote className="absolute right-6 top-7 h-16 w-16 text-white/[0.04]" />
+      <Quote className="absolute right-5 top-5 h-14 w-14 text-white/[0.04] md:right-7 md:top-7 md:h-16 md:w-16" />
 
-      <div className="relative z-10 grid gap-8 md:grid-cols-[auto,1fr] md:items-center">
-        <div className="relative h-24 w-24">
-          <div className={`absolute -inset-1 bg-gradient-to-br ${testimonial.accent} opacity-70 blur-md`} />
-          <ImageWithFallback
-            src={testimonial.avatar}
-            alt={testimonial.name}
-            className="relative h-24 w-24 object-cover grayscale"
-          />
-        </div>
+      <div
+        className={`relative z-10 flex h-full flex-col transition-opacity duration-300 ${
+          isActive ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        <div className="mb-6 flex flex-wrap items-center gap-5 md:mb-7">
+          <div className="relative h-20 w-20 shrink-0 md:h-24 md:w-24">
+            <div className={`absolute -inset-1 bg-gradient-to-br ${testimonial.accent} opacity-70 blur-md`} />
+            <ImageWithFallback
+              src={testimonial.avatar}
+              alt={testimonial.name}
+              className="relative h-full w-full object-cover grayscale"
+            />
+          </div>
 
-        <div>
-          <div className="mb-4 flex gap-1">
+          <div className="flex gap-1.5">
             {[...Array(5)].map((_, starIndex) => (
               <motion.span
                 key={starIndex}
@@ -88,24 +85,26 @@ function TestimonialCard({
                 viewport={{ once: true }}
                 transition={{ delay: starIndex * 0.06, type: 'spring', stiffness: 320, damping: 18 }}
               >
-                <Star className="h-5 w-5 fill-yellow-300 text-yellow-300" />
+                <Star className="h-4 w-4 fill-yellow-300 text-yellow-300 md:h-5 md:w-5" />
               </motion.span>
             ))}
           </div>
+        </div>
 
-          <p className="max-w-3xl text-xl leading-relaxed text-white md:text-2xl">
-            "{testimonial.content}"
+        <div className="flex flex-1 items-center">
+          <p className="max-w-4xl text-[1rem] leading-8 text-white md:text-[1.35rem] md:leading-[1.75]">
+            &ldquo;{testimonial.content}&rdquo;
           </p>
+        </div>
 
-          <div className="mt-7 flex flex-wrap items-end justify-between gap-5 border-t border-white/10 pt-5">
-            <div>
-              <h3 className="text-2xl font-semibold text-white">{testimonial.name}</h3>
-              <p className="text-muted-foreground">{testimonial.role}</p>
-            </div>
-            <span className={`bg-gradient-to-r ${testimonial.accent} bg-clip-text text-sm font-semibold uppercase tracking-[0.3em] text-transparent`}>
-              Verified
-            </span>
+        <div className="mt-6 flex flex-wrap items-end justify-between gap-4 border-t border-white/10 pt-5">
+          <div className="min-w-0">
+            <h3 className="text-xl font-semibold leading-tight text-white md:text-2xl">{testimonial.name}</h3>
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground md:text-base">{testimonial.role}</p>
           </div>
+          <span className={`shrink-0 bg-gradient-to-r ${testimonial.accent} bg-clip-text text-xs font-semibold uppercase tracking-[0.22em] text-transparent md:text-sm`}>
+            Verified
+          </span>
         </div>
       </div>
     </motion.article>
@@ -114,9 +113,20 @@ function TestimonialCard({
 
 export function TestimonialsSection() {
   const { ref, isInView } = useInView();
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    if (!isInView) return;
+
+    const shuffleTimer = window.setInterval(() => {
+      setActiveIndex((currentIndex) => (currentIndex + 1) % testimonials.length);
+    }, 4200);
+
+    return () => window.clearInterval(shuffleTimer);
+  }, [isInView]);
 
   return (
-    <section id="testimonials" ref={ref} className="relative overflow-visible px-6 py-36">
+    <section id="testimonials" ref={ref} className="relative overflow-hidden px-6 py-36">
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(124,58,237,0.06),transparent_38%,rgba(14,165,233,0.05))]" />
 
       <div className="relative z-10 mx-auto max-w-6xl">
@@ -137,16 +147,31 @@ export function TestimonialsSection() {
             </span>
           </h2>
           <p className="mt-5 text-xl text-muted-foreground">
-            Scroll through layered cards that settle into place as each recommendation enters the viewport.
+            Real words from people I have built, shipped, and collaborated with.
           </p>
         </motion.div>
 
-        <div className="pb-24">
+        <div className="relative mx-auto h-[620px] max-w-5xl overflow-visible md:h-[500px]">
           {testimonials.map((testimonial, index) => (
             <TestimonialCard
               key={testimonial.name}
               testimonial={testimonial}
-              index={index}
+              stackIndex={(index - activeIndex + testimonials.length) % testimonials.length}
+              isActive={index === activeIndex}
+            />
+          ))}
+        </div>
+
+        <div className="mt-12 flex justify-center gap-3">
+          {testimonials.map((testimonial, index) => (
+            <button
+              key={testimonial.name}
+              type="button"
+              onClick={() => setActiveIndex(index)}
+              className={`h-2.5 rounded-full transition-all duration-300 ${
+                index === activeIndex ? 'w-10 bg-white' : 'w-2.5 bg-white/30 hover:bg-white/60'
+              }`}
+              aria-label={`Show ${testimonial.name}'s testimonial`}
             />
           ))}
         </div>

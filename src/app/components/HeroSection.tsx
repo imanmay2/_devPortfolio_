@@ -220,7 +220,7 @@ export function HeroSection() {
           <div className="relative border border-white/10 bg-white/[0.04] p-4 shadow-2xl shadow-black/40 backdrop-blur-2xl transition-transform duration-500 ease-out group-hover:scale-[1.035]">
             <div className="relative aspect-[4/5] overflow-hidden bg-[#101426]">
               <ImageWithFallback
-                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&h=1100&fit=crop"
+                src="/images/manmay-profile.png"
                 alt="Manmay Chakraborty"
                 className="h-full w-full object-cover grayscale contrast-110 transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:contrast-100 group-hover:saturate-110"
               />

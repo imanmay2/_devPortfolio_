@@ -6,58 +6,49 @@ import { ImageWithFallback } from './figma/ImageWithFallback';
 
 const projects = [
   {
-    title: 'E-Commerce Platform',
-    description: 'A full-stack e-commerce solution with real-time inventory management, payment integration, and admin dashboard.',
-    image: 'https://images.unsplash.com/photo-1557821552-17105176677c?w=800&h=600&fit=crop',
-    tech: ['Next.js', 'PostgreSQL', 'Stripe', 'Redis'],
+    title: 'NexCare',
+    description: 'A full-stack telemedicine platform connecting patients, doctors, and pharmacies for digital consultations, prescription management, and medicine delivery.',
+    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=900&h=650&fit=crop',
+    tech: ['React', 'GoLang', 'Gin', 'PostgreSQL', 'Redis', 'WebSockets', 'Supabase'],
     liveUrl: '#',
-    githubUrl: '#',
-    gradient: 'from-blue-600 to-cyan-600',
+    githubUrl: 'https://github.com/imanmay2/NexCare',
+    gradient: 'from-cyan-600 to-emerald-600',
   },
   {
-    title: 'Real-Time Chat Application',
-    description: 'Scalable chat platform with WebSocket support, file sharing, and end-to-end encryption.',
-    image: 'https://images.unsplash.com/photo-1611746872915-64382b5c76da?w=800&h=600&fit=crop',
-    tech: ['Node.js', 'Socket.io', 'MongoDB', 'React'],
+    title: 'Wanderlust',
+    description: 'A full-stack accommodation booking platform inspired by modern travel apps, built for exploring, listing, and booking properties with a responsive experience.',
+    image: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=900&h=650&fit=crop',
+    tech: ['MongoDB', 'Express.js', 'React', 'Node.js', 'Mapbox API'],
     liveUrl: '#',
-    githubUrl: '#',
-    gradient: 'from-purple-600 to-pink-600',
+    githubUrl: 'https://github.com/imanmay2/wander_lust',
+    gradient: 'from-blue-600 to-sky-600',
   },
   {
-    title: 'Analytics Dashboard',
-    description: 'Comprehensive analytics platform with data visualization, custom reports, and API integration.',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&h=600&fit=crop',
-    tech: ['Next.js', 'GraphQL', 'D3.js', 'AWS'],
+    title: 'QNeX',
+    description: 'A dynamic quiz platform where users can create, share, and attempt MCQ-based tests through unique access IDs with real-time evaluation.',
+    image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=900&h=650&fit=crop',
+    tech: ['MongoDB', 'Express.js', 'React', 'Node.js', 'Cohere.ai API'],
     liveUrl: '#',
-    githubUrl: '#',
-    gradient: 'from-orange-600 to-red-600',
+    githubUrl: 'https://github.com/imanmay2/QNeX',
+    gradient: 'from-violet-600 to-fuchsia-600',
   },
   {
-    title: 'Task Management System',
-    description: 'Collaborative project management tool with real-time updates, team collaboration features, and task tracking.',
-    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=800&h=600&fit=crop',
-    tech: ['React', 'Express', 'PostgreSQL', 'Docker'],
+    title: 'PharmaMind',
+    description: 'A research-driven drug discovery platform that helps scientists analyze existing drug data, understand usage patterns, and accelerate pharmaceutical research.',
+    image: 'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=900&h=650&fit=crop',
+    tech: ['React', 'Node.js', 'Express.js', 'Authentication'],
     liveUrl: '#',
-    githubUrl: '#',
-    gradient: 'from-green-600 to-emerald-600',
+    githubUrl: 'https://github.com/imanmay2/PharmaMind',
+    gradient: 'from-emerald-600 to-teal-600',
   },
   {
-    title: 'API Gateway Service',
-    description: 'Microservices architecture with API gateway, rate limiting, authentication, and monitoring.',
-    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&h=600&fit=crop',
-    tech: ['Node.js', 'Redis', 'Docker', 'Kubernetes'],
+    title: 'TwitInBook',
+    description: 'A full-stack social networking platform inspired by Twitter and Facebook, supporting posts, likes, comments, and connected real-time interactions.',
+    image: 'https://images.unsplash.com/photo-1611162616475-46b635cb6868?w=900&h=650&fit=crop',
+    tech: ['HTML', 'CSS', 'JavaScript', 'Express.js', 'MySQL'],
     liveUrl: '#',
-    githubUrl: '#',
-    gradient: 'from-yellow-600 to-orange-600',
-  },
-  {
-    title: 'Content Management System',
-    description: 'Headless CMS with RESTful API, content versioning, and multi-language support.',
-    image: 'https://images.unsplash.com/photo-1432888622747-4eb9a8f2c293?w=800&h=600&fit=crop',
-    tech: ['Next.js', 'Strapi', 'PostgreSQL', 'S3'],
-    liveUrl: '#',
-    githubUrl: '#',
-    gradient: 'from-indigo-600 to-purple-600',
+    githubUrl: 'https://github.com/imanmay2/TwitInBook',
+    gradient: 'from-orange-600 to-rose-600',
   },
 ];
 
@@ -132,6 +123,7 @@ function ProjectCard({ project, index, isInView }: { project: typeof projects[0]
     setRotation({ x: 0, y: 0 });
     setIsHovering(false);
   };
+  const hasLiveDemo = project.liveUrl !== '#';
 
   return (
     <motion.div
@@ -182,14 +174,17 @@ function ProjectCard({ project, index, isInView }: { project: typeof projects[0]
           <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <motion.a
               href={project.liveUrl}
+              aria-disabled={!hasLiveDemo}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="p-4 bg-white/90 backdrop-blur-sm rounded-full shadow-xl"
+              className={`p-4 bg-white/90 backdrop-blur-sm rounded-full shadow-xl ${hasLiveDemo ? '' : 'pointer-events-none opacity-45'}`}
             >
               <ExternalLink className="w-6 h-6 text-black" />
             </motion.a>
             <motion.a
               href={project.githubUrl}
+              target="_blank"
+              rel="noreferrer"
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               className="p-4 bg-white/90 backdrop-blur-sm rounded-full shadow-xl"
@@ -222,15 +217,20 @@ function ProjectCard({ project, index, isInView }: { project: typeof projects[0]
           <div className="flex gap-3">
             <motion.a
               href={project.liveUrl}
+              aria-disabled={!hasLiveDemo}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r ${project.gradient} text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-shadow`}
+              className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r ${project.gradient} text-white rounded-xl font-semibold shadow-lg transition-shadow ${
+                hasLiveDemo ? 'hover:shadow-xl' : 'pointer-events-none opacity-50'
+              }`}
             >
               <ExternalLink className="w-4 h-4" />
               Live Demo
             </motion.a>
             <motion.a
               href={project.githubUrl}
+              target="_blank"
+              rel="noreferrer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               className="px-4 py-3 bg-white/10 border border-white/20 rounded-xl hover:bg-white/20 transition-all backdrop-blur-sm"
