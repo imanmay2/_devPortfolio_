@@ -1,0 +1,8 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="320" height="320" fill="#071713"/>
+  <circle cx="70" cy="84" r="126" fill="#34D399" fill-opacity="0.48"/>
+  <circle cx="262" cy="254" r="132" fill="#14B8A6" fill-opacity="0.38"/>
+  <circle cx="160" cy="126" r="66" fill="#E9FFF8"/>
+  <path d="M56 292C66 229 106 194 160 194C214 194 254 229 264 292H56Z" fill="#E9FFF8"/>
+  <text x="160" y="286" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="46" font-weight="800" fill="#071713">VS</text>
+</svg>

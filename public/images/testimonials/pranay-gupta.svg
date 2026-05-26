@@ -1,0 +1,8 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="320" height="320" fill="#170B24"/>
+  <circle cx="254" cy="82" r="124" fill="#A78BFA" fill-opacity="0.5"/>
+  <circle cx="62" cy="250" r="132" fill="#D946EF" fill-opacity="0.34"/>
+  <circle cx="160" cy="126" r="66" fill="#FBF4FF"/>
+  <path d="M56 292C66 229 106 194 160 194C214 194 254 229 264 292H56Z" fill="#FBF4FF"/>
+  <text x="160" y="286" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="46" font-weight="800" fill="#170B24">PG</text>
+</svg>

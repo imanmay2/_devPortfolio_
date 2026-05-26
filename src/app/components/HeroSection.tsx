@@ -12,7 +12,6 @@ import {
   Server,
   Sparkles,
 } from 'lucide-react';
-import { ThemeToggle } from './ThemeToggle';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
 const roles = [
@@ -109,7 +108,6 @@ export function HeroSection() {
         </div>
 
         <div className="flex items-center gap-3">
-          <ThemeToggle />
           <button className="flex h-11 w-11 items-center justify-center border border-white/10 bg-white/[0.04] text-white lg:hidden" aria-label="Open menu">
             <Menu className="h-5 w-5" />
           </button>

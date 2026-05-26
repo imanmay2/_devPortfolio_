@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Quote, Sparkles, Star } from 'lucide-react';
+import { Linkedin, Quote, Sparkles, Star } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useInView } from './hooks/useInView';
 import { ImageWithFallback } from './figma/ImageWithFallback';
@@ -8,15 +8,17 @@ const testimonials = [
   {
     name: 'Sasank V',
     role: 'Web Development Lead @ CodeChef VIT Chennai Student Chapter',
-    avatar: '/images/manmay-profile.png',
+    avatar: '/images/testimonials/sasank-v.svg',
+    linkedin: 'https://www.linkedin.com/in/sasank-v/',
     content:
       'Manmay is a proactive and committed backend developer who consistently delivers high-quality work. He takes ownership of the tasks assigned to him and follows through with dedication. His reliability and problem-solving mindset make him a strong contributor to any team.',
     accent: 'from-cyan-400 to-blue-500',
   },
   {
-    name: 'V Srivatsan',
+    name: 'V SriVatsan',
     role: 'Technical Lead @ E-Cell VIT Chennai',
-    avatar: '/images/manmay-profile.png',
+    avatar: '/images/testimonials/v-srivatsan.svg',
+    linkedin: 'https://www.linkedin.com/in/vatsan-v/',
     content:
       'Working with Manmay as the team lead was a fruitful experience. He is adaptable to different kinds of work, and prioritises learning while ensuring deadlines are met. He is a team player, and manages to produce satisfactory deliverables.',
     accent: 'from-emerald-300 to-teal-500',
@@ -24,10 +26,20 @@ const testimonials = [
   {
     name: 'Pranay Gupta',
     role: 'Management Lead @ E-Cell VIT Chennai',
-    avatar: '/images/manmay-profile.png',
+    avatar: '/images/testimonials/pranay-gupta.svg',
+    linkedin: 'https://www.linkedin.com/in/pranaygupta202/',
     content:
       'It was a cheerful experience working with Manmay on building PharmaMind. His enthusiasm, strong work ethic, and commitment made it possible to transform our idea into a well-structured and presentable project. His development skills played a key role in bringing everything together.',
     accent: 'from-violet-400 to-fuchsia-500',
+  },
+  {
+    name: 'Soumadeep Choudhury',
+    role: 'Review coming soon',
+    avatar: '/images/testimonials/soumadeep-choudhury.svg',
+    linkedin: 'https://www.linkedin.com/in/drsoumadeep/',
+    content:
+      'Demo testimonial placeholder for Soumadeep Choudhury. Replace this line with the final review once it is ready.',
+    accent: 'from-amber-300 to-rose-500',
   },
 ];
 
@@ -76,18 +88,31 @@ function TestimonialCard({
             />
           </div>
 
-          <div className="flex gap-1.5">
-            {[...Array(5)].map((_, starIndex) => (
-              <motion.span
-                key={starIndex}
-                initial={{ opacity: 0, scale: 0 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: starIndex * 0.06, type: 'spring', stiffness: 320, damping: 18 }}
-              >
-                <Star className="h-4 w-4 fill-yellow-300 text-yellow-300 md:h-5 md:w-5" />
-              </motion.span>
-            ))}
+          <div className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-4">
+            <div className="flex gap-1.5">
+              {[...Array(5)].map((_, starIndex) => (
+                <motion.span
+                  key={starIndex}
+                  initial={{ opacity: 0, scale: 0 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: starIndex * 0.06, type: 'spring', stiffness: 320, damping: 18 }}
+                >
+                  <Star className="h-4 w-4 fill-yellow-300 text-yellow-300 md:h-5 md:w-5" />
+                </motion.span>
+              ))}
+            </div>
+
+            <a
+              href={testimonial.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 border border-[#0a66c2]/50 bg-[#0a66c2] px-3.5 py-2 text-sm font-semibold text-white shadow-lg shadow-[#0a66c2]/20 transition-colors hover:bg-[#084f98] focus:outline-none focus:ring-2 focus:ring-[#0a66c2] focus:ring-offset-2 focus:ring-offset-[#0f1324]"
+              aria-label={`Open ${testimonial.name}'s LinkedIn profile`}
+            >
+              <Linkedin className="h-4 w-4 fill-white" />
+              LinkedIn
+            </a>
           </div>
         </div>
 
@@ -114,16 +139,17 @@ function TestimonialCard({
 export function TestimonialsSection() {
   const { ref, isInView } = useInView();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    if (!isInView) return;
+    if (!isInView || isPaused) return;
 
     const shuffleTimer = window.setInterval(() => {
       setActiveIndex((currentIndex) => (currentIndex + 1) % testimonials.length);
-    }, 4200);
+    }, 4500);
 
     return () => window.clearInterval(shuffleTimer);
-  }, [isInView]);
+  }, [isInView, isPaused]);
 
   return (
     <section id="testimonials" ref={ref} className="relative overflow-hidden px-6 py-36">
@@ -151,7 +177,17 @@ export function TestimonialsSection() {
           </p>
         </motion.div>
 
-        <div className="relative mx-auto h-[620px] max-w-5xl overflow-visible md:h-[500px]">
+        <div
+          className="relative mx-auto h-[620px] max-w-5xl overflow-visible md:h-[500px]"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onMouseMove={() => setIsPaused(true)}
+          onPointerEnter={() => setIsPaused(true)}
+          onPointerLeave={() => setIsPaused(false)}
+          onPointerMove={() => setIsPaused(true)}
+          onFocus={() => setIsPaused(true)}
+          onBlur={() => setIsPaused(false)}
+        >
           {testimonials.map((testimonial, index) => (
             <TestimonialCard
               key={testimonial.name}
