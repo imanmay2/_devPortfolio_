@@ -4,7 +4,6 @@ import {
   Code2,
   Server,
   Sparkles,
-  Terminal,
 } from 'lucide-react';
 import { useInView } from './hooks/useInView';
 
@@ -23,21 +22,103 @@ const floatingTags = [
 const developerCode = [
   'const developer = {',
   '  name: "Manmay Chakraborty",',
-  '  role: "Full Stack Engineer",',
-  '  stack: ["Next.js", "Node.js", "Go", "PostgreSQL", "Docker"],',
-  '  strengths: ["backend systems", "clean UI", "real-time apps"],',
-  '  focus: ["AI applications", "system design", "WebRTC"],',
-  '  style: "build → test → iterate → scale",',
-  '  edge: "ships usable products fast 🚀",',
+  '  role: "Full Stack Developer",',
+  '  skills: [',
+  '    "React", "Next.js", "Node.js", "Express",',
+  '    "MongoDB", "PostgreSQL", "Docker", "AWS",',
+  '    "Go", "TypeScript", "WebRTC", "AI/ML"',
+  '  ],',
+  '  experience: "3+ years",',
+  '  traits: ["hardWorker", "quickLearner", "problemSolver"],',
+  '  hireable: function() {',
+  '    return true;',
+  '  },',
+  '  currentStatus: "Building scalable products",',
   '};',
 ];
 
-function getCodeLineClass(line: string) {
-  if (line.includes('const developer')) return 'text-cyan-200';
-  if (line.includes('stack') || line.includes('strengths') || line.includes('currentFocus')) return 'text-fuchsia-300';
-  if (line.includes('"')) return 'text-emerald-300';
-  if (line.includes('};') || line.trim() === '},' || line.trim() === '],') return 'text-slate-500';
-  return 'text-slate-300';
+function renderCodeLine(line: string) {
+  const keyMatch = line.match(/^(\s*)([a-zA-Z]+):(.+)$/);
+
+  if (line === 'const developer = {') {
+    return (
+      <>
+        <span className="text-pink-400">const</span>
+        <span className="text-white"> developer </span>
+        <span className="text-pink-400">=</span>
+        <span className="text-slate-400"> {'{'}</span>
+      </>
+    );
+  }
+
+  if (keyMatch) {
+    const [, indent, key, value] = keyMatch;
+    return (
+      <>
+        <span>{indent}</span>
+        <span className="text-white">{key}</span>
+        <span className="text-slate-300">:</span>
+        {renderCodeValue(value)}
+      </>
+    );
+  }
+
+  if (line.includes('return true;')) {
+    return (
+      <>
+        <span className="text-transparent">    </span>
+        <span className="text-orange-400">return</span>
+        <span className="text-white"> true</span>
+        <span className="text-slate-300">;</span>
+      </>
+    );
+  }
+
+  if (line.trim() === '},') return <span className="text-slate-400">  {'}'},</span>;
+  if (line.trim() === '};') return <span className="text-slate-400">{'};'}</span>;
+  if (line.trim() === '],') return <span className="text-slate-400">  ],</span>;
+
+  return <span className="text-amber-300">{line}</span>;
+}
+
+function renderCodeValue(value: string) {
+  const parts = value.split(/("[^"]*"|true|function)/g).filter(Boolean);
+
+  return (
+    <>
+      {parts.map((part, index) => {
+        if (part.startsWith('"')) {
+          return (
+            <span key={`${part}-${index}`} className="text-yellow-300">
+              {part}
+            </span>
+          );
+        }
+
+        if (part === 'function') {
+          return (
+            <span key={`${part}-${index}`} className="text-orange-400">
+              {part}
+            </span>
+          );
+        }
+
+        if (part === 'true') {
+          return (
+            <span key={`${part}-${index}`} className="text-cyan-200">
+              {part}
+            </span>
+          );
+        }
+
+        return (
+          <span key={`${part}-${index}`} className="text-slate-300">
+            {part}
+          </span>
+        );
+      })}
+    </>
+  );
 }
 
 export function AboutSection() {
@@ -115,69 +196,30 @@ export function AboutSection() {
           className="relative min-h-[520px] w-full max-w-[560px] justify-self-center sm:justify-self-end"
         >
           <motion.div
-            className="absolute inset-5 border border-white/10 bg-white/[0.03] shadow-2xl shadow-black/40 backdrop-blur-2xl [border-radius:34px]"
+            className="absolute inset-5 border border-indigo-500/20 bg-indigo-950/10 shadow-2xl shadow-black/40 backdrop-blur-2xl"
             animate={isInView ? { y: [0, -10, 0] } : {}}
             transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
           />
 
           <motion.div
-            className="absolute inset-0 overflow-hidden border border-white/10 bg-[#0b0e1b] p-5 shadow-2xl shadow-fuchsia-950/30 [border-radius:34px]"
-            whileHover={{ rotate: -1, scale: 1.01 }}
+            className="absolute inset-0 overflow-hidden border border-indigo-500/30 bg-[#080d1d] shadow-2xl shadow-indigo-950/40"
+            whileHover={{ y: -4, scale: 1.01 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="absolute inset-5 bg-gradient-to-br from-indigo-500/34 via-violet-500/20 to-rose-500/36 [border-radius:28px]" />
-            <motion.div
-              className="absolute inset-5 [border-radius:28px]"
-              animate={{ backgroundPosition: ['0% 0%', '100% 100%', '0% 0%'] }}
-              transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
-              style={{
-                backgroundImage:
-                  'linear-gradient(120deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 80px)',
-                backgroundSize: '120px 120px',
-              }}
-            />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_68%_112%,rgba(79,70,229,0.32),transparent_38%),linear-gradient(90deg,rgba(8,13,29,0.95),rgba(12,13,48,0.95))]" />
 
-            <motion.div
-              className="absolute left-10 right-10 top-1/2 z-10 -translate-y-1/2 overflow-hidden border border-white/10 bg-[#151225]/82 shadow-2xl shadow-black/35 backdrop-blur-xl [border-radius:14px]"
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.7, delay: 0.55 }}
-            >
-              <div className="flex items-center justify-between border-b border-white/10 bg-white/[0.025] px-4 py-3">
-                <div className="flex items-center gap-3">
-                  <Terminal className="h-5 w-5 text-cyan-300" />
-                  <span className="text-sm uppercase tracking-[0.28em] text-white/45">developer.ts</span>
-                </div>
-                <div className="flex gap-2">
-                  <span className="h-3 w-3 bg-rose-400" />
-                  <span className="h-3 w-3 bg-amber-300" />
-                  <span className="h-3 w-3 bg-emerald-300" />
-                </div>
+            <div className="relative z-10 flex h-24 items-center border-b-4 border-indigo-500/45 px-8">
+              <div className="flex items-center gap-4">
+                <span className="h-3.5 w-3.5 rounded-full bg-red-400" />
+                <span className="h-3.5 w-3.5 rounded-full bg-orange-400" />
+                <span className="h-3.5 w-3.5 rounded-full bg-emerald-300" />
               </div>
-              <div className="px-5 py-5 font-mono text-[10.5px] leading-[1.7] md:text-[11.5px]">
-                {developerCode.map((line, lineIndex) => (
-                  <div
-                    key={`${line}-${lineIndex}`}
-                    className="grid grid-cols-[2.15rem,1fr] gap-4 whitespace-pre px-1 py-1 transition-colors hover:bg-white/[0.035]"
-                  >
-                    <span className="select-none text-right text-white/18">
-                      {String(lineIndex + 1).padStart(2, '0')}
-                    </span>
-                    <code className={getCodeLineClass(line)}>{line}</code>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
+            </div>
 
-            <div className="absolute bottom-8 left-8 grid grid-cols-3 gap-3">
-              {[
-                { value: '39+', label: 'Stack' },
-                { value: '10+', label: 'Projects' },
-                { value: 'AI', label: 'Focus' },
-              ].map((metric) => (
-                <div key={metric.label} className="border border-white/10 bg-black/35 px-4 py-3 backdrop-blur-xl">
-                  <p className="text-xl font-black text-white">{metric.value}</p>
-                  <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-white/35">{metric.label}</p>
+            <div className="relative z-10 px-8 py-7 font-mono text-[11px] leading-[1.68] text-slate-300 sm:text-[12px] md:text-[13px]">
+              {developerCode.map((line, lineIndex) => (
+                <div key={`${line}-${lineIndex}`} className="whitespace-pre-wrap">
+                  <code>{renderCodeLine(line)}</code>
                 </div>
               ))}
             </div>
