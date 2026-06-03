@@ -28,7 +28,7 @@ const projects = [
     description: 'A dynamic quiz platform where users can create, share, and attempt MCQ-based tests through unique access IDs with real-time evaluation.',
     image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=900&h=650&fit=crop',
     tech: ['MongoDB', 'Express.js', 'React', 'Node.js', 'Cohere.ai API'],
-    liveUrl: '#',
+    liveUrl: 'https://qnexv1.netlify.app',
     githubUrl: 'https://github.com/imanmay2/QNeX',
     gradient: 'from-violet-600 to-fuchsia-600',
   },
