@@ -185,9 +185,9 @@ export function HeroSection() {
 
           <div className="mt-10 flex gap-4">
             {[
-              { icon: Github, href: 'https://github.com' },
-              { icon: Linkedin, href: 'https://linkedin.com' },
-              { icon: Mail, href: 'mailto:manmay@example.com' },
+              { icon: Github, href: 'https://github.com/imanmay2' },
+              { icon: Linkedin, href: 'https://www.linkedin.com/in/imanmay2/' },
+              { icon: Mail, href: 'mailto:imanmay2@gmail.com' },
             ].map((social, index) => (
               <motion.a
                 key={index}

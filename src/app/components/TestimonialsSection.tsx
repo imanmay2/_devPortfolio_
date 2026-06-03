@@ -15,7 +15,7 @@ const testimonials = [
     accent: 'from-cyan-400 to-blue-500',
   },
   {
-    name: 'V SriVatsan',
+    name: 'V Srivatsan',
     role: 'Technical Lead @ E-Cell VIT Chennai',
     avatar: '/images/testimonials/v-srivatsan.svg',
     linkedin: 'https://www.linkedin.com/in/vatsan-v/',
@@ -33,12 +33,12 @@ const testimonials = [
     accent: 'from-violet-400 to-fuchsia-500',
   },
   {
-    name: 'Soumadeep Choudhury',
-    role: 'Review coming soon',
+    name: 'Soumadeep',
+    role: 'Long-time Collaborator',
     avatar: '/images/testimonials/soumadeep-choudhury.svg',
     linkedin: 'https://www.linkedin.com/in/drsoumadeep/',
     content:
-      'Demo testimonial placeholder for Soumadeep Choudhury. Replace this line with the final review once it is ready.',
+      'I have known Manmay for years, and his passion for development is rare. Coding is something he genuinely loves. He thinks deeply, stays curious, keeps improving, and turns collaboration into a space for learning, building, and meaningful growth.',
     accent: 'from-amber-300 to-rose-500',
   },
 ];
@@ -84,7 +84,7 @@ function TestimonialCard({
             <ImageWithFallback
               src={testimonial.avatar}
               alt={testimonial.name}
-              className="relative h-full w-full object-cover grayscale"
+              className="relative h-full w-full rounded-full object-cover grayscale"
             />
           </div>
 

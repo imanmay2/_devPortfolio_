@@ -12,16 +12,8 @@ export function ContactSection() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     setIsSubmitting(true);
-    
-    setTimeout(() => {
-      console.log('Form submitted:', formData);
-      alert('Thank you for your message! I will get back to you soon.');
-      setFormData({ name: '', email: '', message: '' });
-      setIsSubmitting(false);
-    }, 1000);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -35,30 +27,30 @@ export function ContactSection() {
     { 
       icon: Mail, 
       label: 'Email', 
-      value: 'manmay@example.com',
+      value: 'imanmay2@gmail.com',
       color: 'from-blue-500 to-cyan-500',
-      link: 'mailto:manmay@example.com'
+      link: 'mailto:imanmay2@gmail.com'
     },
     { 
       icon: Phone, 
       label: 'Phone', 
-      value: '+1 (555) 123-4567',
+      value: '+91 8597927166',
       color: 'from-purple-500 to-pink-500',
-      link: 'tel:+15551234567'
+      link: 'tel:+918597927166'
     },
     { 
       icon: MapPin, 
       label: 'Location', 
-      value: 'San Francisco, CA',
+      value: 'India',
       color: 'from-orange-500 to-red-500',
       link: '#'
     },
   ];
 
   const socials = [
-    { icon: Github, href: 'https://github.com', color: 'from-gray-600 to-gray-900', label: 'GitHub' },
-    { icon: Linkedin, href: 'https://linkedin.com', color: 'from-blue-600 to-blue-800', label: 'LinkedIn' },
-    { icon: Twitter, href: 'https://twitter.com', color: 'from-sky-500 to-blue-600', label: 'Twitter' },
+    { icon: Github, href: 'https://github.com/imanmay2', color: 'from-gray-600 to-gray-900', label: 'GitHub' },
+    { icon: Linkedin, href: 'https://www.linkedin.com/in/imanmay2/', color: 'from-blue-600 to-blue-800', label: 'LinkedIn' },
+    { icon: Twitter, href: 'https://x.com/imanmay2', color: 'from-sky-500 to-blue-600', label: 'Twitter' },
   ];
 
   return (
@@ -176,7 +168,15 @@ export function ContactSection() {
                 className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-3xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"
               />
               
-              <form onSubmit={handleSubmit} className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl p-10 shadow-2xl space-y-8">
+              <form
+                action="https://formsubmit.co/imanmay2@gmail.com"
+                method="POST"
+                onSubmit={handleSubmit}
+                className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl p-10 shadow-2xl space-y-8"
+              >
+                <input type="hidden" name="_subject" value="New portfolio message" />
+                <input type="hidden" name="_captcha" value="false" />
+                <input type="hidden" name="_template" value="table" />
                 <div>
                   <label htmlFor="name" className="block text-lg font-semibold mb-3">
                     Your Name
