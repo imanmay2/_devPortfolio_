@@ -1,8 +1,6 @@
 
   # Personal Portfolio Website UI
-
-  This is a code bundle for Personal Portfolio Website UI. The original project is available at https://www.figma.com/design/IBCosWVkuqwGEH0AP0Etiq/Personal-Portfolio-Website-UI.
-
+  View it live at : http://imanmay2dev.netlify.app/
   ## Running the code
 
   Run `npm i` to install the dependencies.
