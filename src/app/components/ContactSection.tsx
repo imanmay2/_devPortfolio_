@@ -54,51 +54,42 @@ export function ContactSection() {
   ];
 
   return (
-    <section id="contact" ref={ref} className="py-40 px-6 relative overflow-hidden">
+    <section id="contact" ref={ref} className="portfolio-section py-28 md:py-36">
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 via-purple-500/5 to-pink-500/5" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(34,211,238,0.10),transparent_30%),radial-gradient(circle_at_82%_66%,rgba(168,85,247,0.12),transparent_34%),linear-gradient(180deg,transparent,rgba(7,9,19,0.84))]" />
       
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="portfolio-container">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+          className="mx-auto mb-16 max-w-4xl text-center"
         >
-          <motion.div
-            className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-xl border border-white/20 rounded-full mb-8"
-            animate={isInView ? {
-              scale: [1, 1.05, 1],
-            } : {}}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-            }}
-          >
+          <div className="section-kicker mb-8">
             <MessageCircle className="w-5 h-5 text-blue-400" />
-            <span className="text-sm font-semibold">GET IN TOUCH</span>
-          </motion.div>
+            <span>Get In Touch</span>
+          </div>
 
-          <h2 className="text-6xl md:text-7xl lg:text-8xl mb-6 font-bold">
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h2 className="section-title mb-6 lg:text-7xl">
+            <span className="section-title-gradient">
               Let's Work Together
             </span>
           </h2>
-          <p className="text-2xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="section-copy mx-auto max-w-2xl md:text-xl">
             Have a project in mind? Let's create something{' '}
             <span className="text-purple-400 font-semibold">amazing together</span>
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-5 gap-12">
+        <div className="grid gap-8 lg:grid-cols-5 lg:gap-10">
           {/* Contact Info */}
           <motion.div
             initial={{ opacity: 0, x: -80 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="lg:col-span-2 space-y-8"
+            className="space-y-6 lg:col-span-2"
           >
-            <div className="space-y-6">
+            <div className="space-y-4">
               {contactInfo.map((info, index) => (
                 <motion.a
                   key={info.label}
@@ -106,22 +97,21 @@ export function ContactSection() {
                   initial={{ opacity: 0, x: -50 }}
                   animate={isInView ? { opacity: 1, x: 0 } : {}}
                   transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
-                  whileHover={{ scale: 1.02, x: 10 }}
-                  className="flex items-center gap-6 p-6 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-2xl group cursor-pointer relative overflow-hidden"
+                  whileHover={{ y: -4 }}
+                  className="premium-focus premium-surface group relative flex min-w-0 items-center gap-4 overflow-hidden p-4 transition-colors hover:border-white/20 sm:p-5"
                 >
                   <motion.div
                     className={`absolute inset-0 bg-gradient-to-r ${info.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}
                   />
                   <motion.div
-                    className={`p-4 bg-gradient-to-r ${info.color} rounded-xl relative z-10`}
-                    whileHover={{ rotate: 360 }}
-                    transition={{ duration: 0.6 }}
+                    className={`relative z-10 rounded-xl bg-gradient-to-r ${info.color} p-3`}
+                    whileHover={{ y: -2 }}
                   >
                     <info.icon className="w-6 h-6 text-white" />
                   </motion.div>
-                  <div className="relative z-10">
+                  <div className="relative z-10 min-w-0">
                     <p className="text-sm text-muted-foreground mb-1">{info.label}</p>
-                    <p className="font-semibold">{info.value}</p>
+                    <p className="break-words font-semibold text-white">{info.value}</p>
                   </div>
                 </motion.a>
               ))}
@@ -131,19 +121,20 @@ export function ContactSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20 rounded-2xl p-8"
+              className="premium-surface bg-gradient-to-br from-blue-500/10 to-purple-500/10 p-6 sm:p-7"
             >
               <h3 className="text-xl font-bold mb-4">Follow Me</h3>
               <div className="flex gap-4 mb-6">
-                {socials.map((social, index) => (
+                {socials.map((social) => (
                   <motion.a
                     key={social.label}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    whileHover={{ scale: 1.2, rotate: 5 }}
+                    aria-label={`Open ${social.label}`}
+                    whileHover={{ y: -4 }}
                     whileTap={{ scale: 0.9 }}
-                    className={`p-4 bg-gradient-to-br ${social.color} rounded-xl shadow-lg`}
+                    className={`premium-focus rounded-xl bg-gradient-to-br ${social.color} p-4 shadow-lg`}
                   >
                     <social.icon className="w-6 h-6 text-white" />
                   </motion.a>
@@ -164,66 +155,61 @@ export function ContactSection() {
             className="lg:col-span-3"
           >
             <div className="relative group">
-              <motion.div
-                className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-3xl blur-xl opacity-20 group-hover:opacity-40 transition-opacity duration-500"
-              />
+              <motion.div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 opacity-20 blur-xl transition-opacity duration-500 group-hover:opacity-32" />
               
               <form
                 action="https://formsubmit.co/imanmay2@gmail.com"
                 method="POST"
                 onSubmit={handleSubmit}
-                className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl p-10 shadow-2xl space-y-8"
+                className="premium-surface relative space-y-6 p-5 sm:p-7 lg:p-8"
               >
                 <input type="hidden" name="_subject" value="New portfolio message" />
                 <input type="hidden" name="_captcha" value="false" />
                 <input type="hidden" name="_template" value="table" />
                 <div>
-                  <label htmlFor="name" className="block text-lg font-semibold mb-3">
+                  <label htmlFor="name" className="mb-2 block text-sm font-semibold text-white/80">
                     Your Name
                   </label>
                   <motion.input
-                    whileFocus={{ scale: 1.01 }}
                     type="text"
                     id="name"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-6 py-4 bg-white/5 border-2 border-white/10 rounded-xl focus:border-blue-500 focus:outline-none transition-all text-lg backdrop-blur-sm"
+                    className="premium-focus w-full rounded-xl border border-white/10 bg-white/[0.045] px-4 py-3.5 text-base text-white backdrop-blur-sm transition-all placeholder:text-white/28 focus:border-cyan-300/55"
                     placeholder="John Doe"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="email" className="block text-lg font-semibold mb-3">
+                  <label htmlFor="email" className="mb-2 block text-sm font-semibold text-white/80">
                     Email Address
                   </label>
                   <motion.input
-                    whileFocus={{ scale: 1.01 }}
                     type="email"
                     id="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-6 py-4 bg-white/5 border-2 border-white/10 rounded-xl focus:border-blue-500 focus:outline-none transition-all text-lg backdrop-blur-sm"
+                    className="premium-focus w-full rounded-xl border border-white/10 bg-white/[0.045] px-4 py-3.5 text-base text-white backdrop-blur-sm transition-all placeholder:text-white/28 focus:border-cyan-300/55"
                     placeholder="john@example.com"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-lg font-semibold mb-3">
+                  <label htmlFor="message" className="mb-2 block text-sm font-semibold text-white/80">
                     Your Message
                   </label>
                   <motion.textarea
-                    whileFocus={{ scale: 1.01 }}
                     id="message"
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
                     required
                     rows={6}
-                    className="w-full px-6 py-4 bg-white/5 border-2 border-white/10 rounded-xl focus:border-blue-500 focus:outline-none transition-all resize-none text-lg backdrop-blur-sm"
+                    className="premium-focus w-full resize-none rounded-xl border border-white/10 bg-white/[0.045] px-4 py-3.5 text-base text-white backdrop-blur-sm transition-all placeholder:text-white/28 focus:border-cyan-300/55"
                     placeholder="Tell me about your project..."
                   />
                 </div>
@@ -233,7 +219,7 @@ export function ContactSection() {
                   disabled={isSubmitting}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full px-8 py-5 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white rounded-xl font-bold text-lg flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
+                  className="premium-focus group relative flex w-full items-center justify-center gap-3 overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 px-8 py-4 text-base font-bold text-white shadow-xl transition-all hover:shadow-2xl disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400"
@@ -247,13 +233,13 @@ export function ContactSection() {
                         <motion.div
                           animate={{ rotate: 360 }}
                           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                          className="w-6 h-6 border-3 border-white border-t-transparent rounded-full"
+                          className="h-5 w-5 rounded-full border-2 border-white border-t-transparent"
                         />
                         Sending...
                       </>
                     ) : (
                       <>
-                        <Send className="w-6 h-6" />
+                        <Send className="h-5 w-5" />
                         Send Message
                       </>
                     )}
