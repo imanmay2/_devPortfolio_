@@ -92,55 +92,46 @@ type Skill = (typeof skillRows)[number]['skills'][number];
 function SkillPill({ skill }: { skill: Skill }) {
   return (
     <motion.div
-      whileHover={{ y: -4, scale: 1.02 }}
+      whileHover={{ y: -3 }}
       transition={{ type: 'spring', stiffness: 320, damping: 22 }}
-      className="group mx-2 flex h-[68px] w-[178px] shrink-0 items-center gap-3 border border-white/10 bg-white/[0.04] px-3 py-2 shadow-lg shadow-black/20 backdrop-blur-xl transition-colors duration-300 hover:border-cyan-300/35 hover:bg-white/[0.07] sm:w-[198px]"
+      className="group flex min-w-0 items-center gap-3 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2.5 shadow-lg shadow-black/15 backdrop-blur-xl transition-colors duration-300 hover:border-cyan-300/35 hover:bg-white/[0.07]"
     >
-      <div className={`flex h-10 w-10 shrink-0 items-center justify-center bg-gradient-to-br ${skill.color} text-[#070913] shadow-md shadow-black/25`}>
+      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${skill.color} text-[#070913] shadow-md shadow-black/25`}>
         <skill.Icon className="h-5 w-5" strokeWidth={2.3} />
       </div>
       <div className="min-w-0">
-        <h3 className="truncate text-sm font-black tracking-tight text-white sm:text-base">{skill.name}</h3>
+        <h3 className="truncate text-sm font-bold tracking-tight text-white">{skill.name}</h3>
         <p className="mt-0.5 truncate text-[10px] font-bold uppercase tracking-[0.16em] text-white/40">{skill.detail}</p>
       </div>
     </motion.div>
   );
 }
 
-function SkillLane({ row, rowIndex }: { row: (typeof skillRows)[number]; rowIndex: number }) {
-  const repeatedSkills = [...row.skills, ...row.skills, ...row.skills];
-  const reverse = row.direction === 'right';
-
+function SkillGroup({ row, rowIndex }: { row: (typeof skillRows)[number]; rowIndex: number }) {
   return (
-    <div className="relative overflow-hidden border border-white/10 bg-[#0f1220]/60 py-3 shadow-xl shadow-black/20 backdrop-blur-xl">
-      <div className="mb-2 flex items-center gap-3 px-4">
-        <p className="shrink-0 text-[10px] font-black uppercase tracking-[0.2em] text-white/45">{row.label}</p>
-        <span className="h-px flex-1 bg-white/10" />
+    <motion.article
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.55, delay: rowIndex * 0.06 }}
+      className="premium-surface group relative overflow-hidden p-4 transition-colors hover:border-white/20 sm:p-5"
+    >
+      <div className="absolute -right-14 -top-14 h-32 w-32 rounded-full bg-cyan-300/10 blur-3xl transition-opacity group-hover:opacity-80" />
+      <div className="relative mb-4 flex items-center gap-3">
+        <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-cyan-200">
+          {rowIndex === 0 ? <Code2 className="h-5 w-5" /> : rowIndex === 1 ? <Layers3 className="h-5 w-5" /> : rowIndex === 2 ? <Server className="h-5 w-5" /> : rowIndex === 3 ? <Database className="h-5 w-5" /> : <Cloud className="h-5 w-5" />}
+        </span>
+        <div className="min-w-0">
+          <h3 className="truncate text-lg font-semibold text-white">{row.label}</h3>
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-white/40">{row.skills.length} tools</p>
+        </div>
       </div>
-      <div className="relative flex overflow-hidden">
-        <motion.div
-          className="flex min-w-max"
-          animate={{ x: reverse ? ['-33.333%', '0%'] : ['0%', '-33.333%'] }}
-          transition={{ duration: 24 + rowIndex * 3, repeat: Infinity, ease: 'linear' }}
-        >
-          {repeatedSkills.map((skill, skillIndex) => (
-            <SkillPill key={`${row.label}-${skill.name}-${skillIndex}`} skill={skill} />
-          ))}
-        </motion.div>
+      <div className="relative grid gap-2 sm:grid-cols-2">
+        {row.skills.map((skill) => (
+          <SkillPill key={skill.name} skill={skill} />
+        ))}
       </div>
-    </div>
-  );
-}
-
-function SkillFrame() {
-  return (
-    <div className="relative -mx-6 space-y-3 overflow-hidden px-6 md:mx-0 md:px-0">
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-[#090a12] to-transparent md:w-28" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-[#090a12] to-transparent md:w-28" />
-      {skillRows.map((row, index) => (
-        <SkillLane key={row.label} row={row} rowIndex={index} />
-      ))}
-    </div>
+    </motion.article>
   );
 }
 
@@ -148,33 +139,33 @@ export function SkillsSection() {
   const { ref, isInView } = useInView();
 
   return (
-    <section id="skills" ref={ref} className="relative overflow-hidden px-6 py-20">
+    <section id="skills" ref={ref} className="portfolio-section">
       <div className="absolute inset-0 bg-[#090a12]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(34,211,238,0.08),transparent_34%),radial-gradient(circle_at_80%_75%,rgba(217,70,239,0.06),transparent_26%)]" />
 
-      <div className="relative z-10 mx-auto max-w-7xl">
+      <div className="portfolio-container">
         <motion.div
           initial={{ opacity: 0, y: 42 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="mb-10 text-center"
+          className="mb-12 text-center"
         >
-          <div className="mb-6 inline-flex items-center gap-3 border border-white/10 bg-white/[0.04] px-4 py-2 shadow-xl shadow-black/20 backdrop-blur-xl">
+          <div className="section-kicker mb-6">
             <Sparkles className="h-4 w-4 text-cyan-300" />
-            <span className="text-xs font-black uppercase tracking-[0.22em] text-white/70">Technical Skills</span>
+            <span>Technical Skills</span>
           </div>
 
-          <h2 className="text-4xl font-black leading-none tracking-tight md:text-5xl">
-            <span className="bg-gradient-to-r from-cyan-300 via-emerald-300 to-fuchsia-400 bg-clip-text text-transparent">
+          <h2 className="section-title">
+            <span className="section-title-gradient">
               Skills & Expertise
             </span>
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-muted-foreground md:text-base">
+          <p className="section-copy mx-auto mt-4 max-w-2xl">
             A focused stack across frontend, backend, databases, DevOps, and cloud work.
           </p>
 
           <motion.div
-            className="mx-auto mt-6 inline-flex items-center gap-3 border border-cyan-300/20 bg-cyan-300/5 px-5 py-2.5 shadow-xl shadow-cyan-950/20"
+            className="mx-auto mt-6 inline-flex items-center gap-3 rounded-full border border-cyan-300/20 bg-cyan-300/5 px-5 py-2.5 shadow-xl shadow-cyan-950/20"
             whileHover={{ y: -5 }}
           >
             <span className="text-2xl font-black text-white">{techStackCount}+</span>
@@ -186,9 +177,11 @@ export function SkillsSection() {
           initial={{ opacity: 0, scale: 0.97 }}
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.15 }}
-          className="relative"
+          className="relative grid gap-4 lg:grid-cols-2 xl:grid-cols-3"
         >
-          <SkillFrame />
+          {skillRows.map((row, index) => (
+            <SkillGroup key={row.label} row={row} rowIndex={index} />
+          ))}
         </motion.div>
       </div>
     </section>

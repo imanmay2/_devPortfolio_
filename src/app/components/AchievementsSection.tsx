@@ -32,27 +32,27 @@ export function AchievementsSection() {
   const { ref, isInView } = useInView();
 
   return (
-    <section id="achievements" ref={ref} className="relative overflow-hidden px-6 py-28">
+    <section id="achievements" ref={ref} className="portfolio-section py-24 md:py-28">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_18%,rgba(34,211,238,0.12),transparent_30%),radial-gradient(circle_at_82%_72%,rgba(236,72,153,0.11),transparent_32%),linear-gradient(180deg,transparent,rgba(15,23,42,0.34),transparent)]" />
 
-      <div className="relative z-10 mx-auto max-w-7xl">
+      <div className="portfolio-container">
         <motion.div
           initial={{ opacity: 0, y: 44 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
           className="mb-14 text-center"
         >
-          <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/[0.05] px-5 py-3 backdrop-blur-xl">
+          <div className="section-kicker mb-7">
             <Award className="h-5 w-5 text-amber-300" />
-            <span className="text-sm font-semibold uppercase tracking-[0.24em] text-white/70">Achievements</span>
+            <span>Achievements</span>
           </div>
 
-          <h2 className="text-5xl font-bold leading-tight md:text-6xl lg:text-7xl">
-            <span className="bg-gradient-to-r from-cyan-300 via-purple-300 to-amber-300 bg-clip-text text-transparent">
+          <h2 className="section-title lg:text-7xl">
+            <span className="section-title-gradient">
               Recognition & Milestones
             </span>
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-xl">
+          <p className="section-copy mx-auto mt-5 max-w-2xl">
             Competitive technology milestones that reflect problem-solving, consistency, and execution under pressure.
           </p>
         </motion.div>
@@ -82,7 +82,7 @@ function AchievementCard({
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.75, delay: index * 0.16 }}
       whileHover={{ y: -8 }}
-      className="group relative min-w-0 overflow-hidden rounded-2xl border border-white/15 bg-gradient-to-br from-white/[0.11] to-white/[0.045] p-4 shadow-2xl shadow-black/30 backdrop-blur-xl transition-colors hover:border-white/25 sm:p-5"
+      className="premium-surface group relative min-w-0 overflow-hidden p-4 transition-colors hover:border-white/25 sm:p-5"
     >
       <div className={`absolute -right-16 -top-20 h-52 w-52 bg-gradient-to-br ${achievement.gradient} opacity-20 blur-3xl transition-opacity duration-500 group-hover:opacity-30`} />
       <div className="grid min-h-full gap-5 md:grid-cols-[minmax(0,0.78fr)_minmax(220px,0.52fr)] md:items-stretch">

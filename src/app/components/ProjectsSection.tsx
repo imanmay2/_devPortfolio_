@@ -1,6 +1,5 @@
 import { motion } from 'motion/react';
 import { useInView } from './hooks/useInView';
-import { useState } from 'react';
 import { ExternalLink, Github, Eye } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
@@ -56,45 +55,36 @@ export function ProjectsSection() {
   const { ref, isInView } = useInView();
 
   return (
-    <section id="projects" ref={ref} className="py-40 px-6 relative overflow-hidden">
+    <section id="projects" ref={ref} className="portfolio-section py-28 md:py-36">
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 via-transparent to-blue-500/5" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_12%,rgba(168,85,247,0.10),transparent_30%),radial-gradient(circle_at_86%_45%,rgba(34,211,238,0.09),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.015),transparent,rgba(59,130,246,0.04))]" />
       
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="portfolio-container">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-20"
+          className="mb-14 max-w-3xl"
         >
-          <motion.div
-            className="inline-flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-xl border border-white/20 rounded-full mb-8"
-            animate={isInView ? {
-              scale: [1, 1.05, 1],
-            } : {}}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-            }}
-          >
+          <div className="section-kicker mb-7">
             <Eye className="w-5 h-5 text-blue-400" />
-            <span className="text-sm font-semibold">PORTFOLIO</span>
-          </motion.div>
+            <span>Portfolio</span>
+          </div>
           
-          <h2 className="text-6xl md:text-7xl lg:text-8xl mb-6 font-bold">
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <h2 className="section-title mb-5 lg:text-7xl">
+            <span className="section-title-gradient">
               Featured Projects
             </span>
           </h2>
-          <p className="text-2xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="section-copy max-w-2xl">
             Some of my <span className="text-purple-400 font-semibold">recent work</span> and{' '}
             <span className="text-blue-400 font-semibold">achievements</span>
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-6">
           {projects.map((project, index) => (
-            <ProjectCard key={project.title} project={project} index={index} isInView={isInView} />
+            <ProjectCard key={project.title} project={project} index={index} isInView={isInView} featured={index === 0} />
           ))}
         </div>
       </div>
@@ -102,82 +92,55 @@ export function ProjectsSection() {
   );
 }
 
-function ProjectCard({ project, index, isInView }: { project: typeof projects[0]; index: number; isInView: boolean }) {
-  const [rotation, setRotation] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = (y - centerY) / 15;
-    const rotateY = (centerX - x) / 15;
-
-    setRotation({ x: rotateX, y: rotateY });
-  };
-
-  const handleMouseLeave = () => {
-    setRotation({ x: 0, y: 0 });
-    setIsHovering(false);
-  };
+function ProjectCard({
+  project,
+  index,
+  isInView,
+  featured,
+}: {
+  project: typeof projects[0];
+  index: number;
+  isInView: boolean;
+  featured: boolean;
+}) {
   const hasLiveDemo = project.liveUrl !== '#';
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 80 }}
+      initial={{ opacity: 0, y: 54 }}
       animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, delay: index * 0.15 }}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        transform: isHovering
-          ? `perspective(1000px) rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) scale(1.05)`
-          : 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)',
-        transition: 'transform 0.2s ease-out',
-      }}
-      className="relative group"
+      transition={{ duration: 0.7, delay: index * 0.08 }}
+      whileHover={{ y: -6 }}
+      className={`group relative min-w-0 ${featured ? 'md:col-span-2 xl:col-span-4' : 'xl:col-span-2'}`}
     >
       {/* Glow effect */}
       <motion.div
-        className={`absolute -inset-1 bg-gradient-to-r ${project.gradient} rounded-3xl blur-xl opacity-0 group-hover:opacity-60 transition-opacity duration-500`}
+        className={`absolute -inset-1 rounded-2xl bg-gradient-to-r ${project.gradient} blur-xl opacity-0 transition-opacity duration-500 group-hover:opacity-25`}
       />
 
-      <div className="relative bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/20 rounded-3xl overflow-hidden shadow-2xl">
-        <div className="relative overflow-hidden h-56">
+      <article className={`premium-surface relative h-full overflow-hidden transition-colors group-hover:border-white/20 ${featured ? 'grid lg:grid-cols-[1.05fr_0.95fr]' : ''}`}>
+        <div className={`relative overflow-hidden ${featured ? 'min-h-[280px] lg:min-h-full' : 'h-52'}`}>
           <ImageWithFallback
             src={project.image}
             alt={project.title}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
           
           {/* Floating tag */}
-          <motion.div
-            className={`absolute top-4 right-4 px-4 py-2 bg-gradient-to-r ${project.gradient} rounded-full text-sm font-semibold text-white shadow-lg`}
-            animate={{
-              y: [0, -5, 0],
-            }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          >
-            Featured
-          </motion.div>
+          <div className={`absolute right-4 top-4 rounded-full bg-gradient-to-r ${project.gradient} px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-white shadow-lg`}>
+            {featured ? 'Featured' : 'Project'}
+          </div>
 
           {/* Quick view buttons */}
-          <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div className="absolute inset-0 flex items-center justify-center gap-4 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
             <motion.a
               href={project.liveUrl}
               aria-disabled={!hasLiveDemo}
+              aria-label={`Open live demo for ${project.title}`}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className={`p-4 bg-white/90 backdrop-blur-sm rounded-full shadow-xl ${hasLiveDemo ? '' : 'pointer-events-none opacity-45'}`}
+              className={`premium-focus rounded-full bg-white/90 p-4 shadow-xl backdrop-blur-sm ${hasLiveDemo ? '' : 'pointer-events-none opacity-45'}`}
             >
               <ExternalLink className="w-6 h-6 text-black" />
             </motion.a>
@@ -185,42 +148,47 @@ function ProjectCard({ project, index, isInView }: { project: typeof projects[0]
               href={project.githubUrl}
               target="_blank"
               rel="noreferrer"
+              aria-label={`Open ${project.title} on GitHub`}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
-              className="p-4 bg-white/90 backdrop-blur-sm rounded-full shadow-xl"
+              className="premium-focus rounded-full bg-white/90 p-4 shadow-xl backdrop-blur-sm"
             >
               <Github className="w-6 h-6 text-black" />
             </motion.a>
           </div>
         </div>
 
-        <div className="p-8">
-          <h3 className="text-2xl font-bold mb-3 group-hover:text-transparent group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-400 group-hover:bg-clip-text transition-all">
+        <div className={`flex flex-col p-5 sm:p-6 ${featured ? 'lg:p-8' : ''}`}>
+          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.22em] text-cyan-200/60">
+            Engineering Work
+          </p>
+          <h3 className={`${featured ? 'text-3xl md:text-4xl' : 'text-2xl'} mb-3 font-bold leading-tight transition-all group-hover:bg-gradient-to-r group-hover:from-blue-400 group-hover:to-purple-400 group-hover:bg-clip-text group-hover:text-transparent`}>
             {project.title}
           </h3>
-          <p className="text-sm text-muted-foreground mb-6 leading-relaxed line-clamp-3">
+          <p className={`mb-6 text-sm leading-relaxed text-muted-foreground ${featured ? 'md:text-base' : 'line-clamp-3'}`}>
             {project.description}
           </p>
 
-          <div className="flex flex-wrap gap-2 mb-6">
+          <div className="mb-6 flex flex-wrap gap-2">
             {project.tech.map((tech) => (
               <motion.span
                 key={tech}
-                whileHover={{ scale: 1.1, y: -2 }}
-                className="px-3 py-1.5 bg-white/10 border border-white/20 rounded-lg text-xs font-semibold backdrop-blur-sm"
+                whileHover={{ y: -2 }}
+                className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1.5 text-xs font-semibold text-white/75 backdrop-blur-sm"
               >
                 {tech}
               </motion.span>
             ))}
           </div>
 
-          <div className="flex gap-3">
+          <div className="mt-auto flex flex-wrap gap-3">
             <motion.a
               href={project.liveUrl}
               aria-disabled={!hasLiveDemo}
+              aria-label={`Open live demo for ${project.title}`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r ${project.gradient} text-white rounded-xl font-semibold shadow-lg transition-shadow ${
+              className={`premium-focus inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r ${project.gradient} px-4 py-3 font-semibold text-white shadow-lg transition-shadow ${
                 hasLiveDemo ? 'hover:shadow-xl' : 'pointer-events-none opacity-50'
               }`}
             >
@@ -231,15 +199,16 @@ function ProjectCard({ project, index, isInView }: { project: typeof projects[0]
               href={project.githubUrl}
               target="_blank"
               rel="noreferrer"
+              aria-label={`Open ${project.title} on GitHub`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-4 py-3 bg-white/10 border border-white/20 rounded-xl hover:bg-white/20 transition-all backdrop-blur-sm"
+              className="premium-focus rounded-xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-sm transition-all hover:bg-white/20"
             >
               <Github className="w-5 h-5" />
             </motion.a>
           </div>
         </div>
-      </div>
+      </article>
     </motion.div>
   );
 }

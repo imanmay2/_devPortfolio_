@@ -14,7 +14,7 @@ import { Footer } from './components/Footer';
 export default function App() {
   return (
     <ThemeProvider attribute="class" defaultTheme="dark" forcedTheme="dark" enableSystem={false}>
-      <div className="min-h-screen bg-background text-foreground">
+      <div className="min-h-screen overflow-x-hidden bg-[#070913] text-foreground">
         <CustomCursor />
 
         {/* Main Content */}
