@@ -2,14 +2,19 @@ import { motion } from 'motion/react';
 import { useEffect, useMemo, useState } from 'react';
 import {
   ArrowUpRight,
+  BookOpen,
   CheckCircle2,
   Code2,
   GitCommitHorizontal,
   Github,
   GitPullRequest,
+  LucideIcon,
   Loader2,
   RefreshCw,
   Star,
+  Target,
+  Trophy,
+  Users,
 } from 'lucide-react';
 import { useInView } from './hooks/useInView';
 
@@ -87,6 +92,21 @@ type LeetCodeApiResponse = Partial<LeetCodeStats> & {
   ranking?: number;
 };
 
+type ProfileCard = {
+  platform: string;
+  Icon: LucideIcon;
+  username: string;
+  url: string;
+  color: string;
+  accent: string;
+  summary: string;
+  stats: Array<{
+    label: string;
+    value: string;
+    Icon: LucideIcon;
+  }>;
+};
+
 const initialGitHubStats: GitHubStats = {
   profile: null,
   stars: null,
@@ -111,6 +131,11 @@ const formatDate = (date: string) =>
     month: 'short',
     day: 'numeric',
   }).format(new Date(date));
+
+const getSolvedPercentage = (value: number | null, total: number | null) => {
+  if (!value || !total) return 0;
+  return Math.min(100, Math.round((value / total) * 100));
+};
 
 const getLeetCodeStats = async () => {
   const endpoints = [
@@ -260,7 +285,7 @@ export function GithubSection() {
     };
   }, []);
 
-  const profileCards = useMemo(
+  const profileCards = useMemo<ProfileCard[]>(
     () => [
       {
         platform: 'GitHub',
@@ -269,10 +294,11 @@ export function GithubSection() {
         url: `https://github.com/${GITHUB_USERNAME}`,
         color: 'from-slate-200 to-cyan-300',
         accent: 'text-cyan-300',
+        summary: 'Public repositories, stars, and community signals from GitHub.',
         stats: [
-          { label: 'Public repos', value: formatNumber(githubStats.profile?.public_repos) },
-          { label: 'Total stars', value: formatNumber(githubStats.stars) },
-          { label: 'Followers', value: formatNumber(githubStats.profile?.followers) },
+          { label: 'Public repos', value: formatNumber(githubStats.profile?.public_repos), Icon: BookOpen },
+          { label: 'Total stars', value: formatNumber(githubStats.stars), Icon: Star },
+          { label: 'Followers', value: formatNumber(githubStats.profile?.followers), Icon: Users },
         ],
       },
       {
@@ -282,10 +308,11 @@ export function GithubSection() {
         url: `https://leetcode.com/u/${LEETCODE_USERNAME}/`,
         color: 'from-amber-300 to-orange-500',
         accent: 'text-amber-300',
+        summary: 'Problem-solving progress and ranking from the current LeetCode profile.',
         stats: [
-          { label: 'Problems solved', value: formatNumber(leetcodeStats.totalSolved) },
-          { label: 'Medium solved', value: formatNumber(leetcodeStats.mediumSolved) },
-          { label: 'Global rank', value: formatNumber(leetcodeStats.ranking) },
+          { label: 'Problems solved', value: formatNumber(leetcodeStats.totalSolved), Icon: CheckCircle2 },
+          { label: 'Medium solved', value: formatNumber(leetcodeStats.mediumSolved), Icon: Target },
+          { label: 'Global rank', value: formatNumber(leetcodeStats.ranking), Icon: Trophy },
         ],
       },
     ],
@@ -293,7 +320,7 @@ export function GithubSection() {
   );
 
   return (
-    <section id="profiles" ref={ref} className="relative overflow-hidden px-6 py-32">
+    <section id="profiles" ref={ref} className="relative overflow-hidden px-6 py-28 md:py-32">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(34,211,238,0.12),transparent_28%),radial-gradient(circle_at_84%_32%,rgba(251,191,36,0.12),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.02),rgba(12,15,28,0.82),rgba(255,255,255,0.02))]" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
 
@@ -325,43 +352,16 @@ export function GithubSection() {
           </div>
         </motion.div>
 
-        <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr]">
+        <div className="grid gap-6 xl:grid-cols-[0.88fr_1.12fr]">
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-1">
             {profileCards.map((profile, index) => (
-              <motion.a
+              <ProfileOverviewCard
                 key={profile.platform}
-                href={profile.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 42 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.75, delay: index * 0.14 }}
-                whileHover={{ y: -8 }}
-                whileTap={{ scale: 0.98 }}
-                className="group relative overflow-hidden border border-white/10 bg-[#101426]/90 p-7 shadow-2xl shadow-black/30 backdrop-blur-xl transition-colors hover:border-white/25"
-              >
-                <div className={`absolute -right-14 -top-16 h-40 w-40 bg-gradient-to-br ${profile.color} opacity-20 blur-3xl transition-opacity group-hover:opacity-30`} />
-                <div className="relative z-10">
-                  <div className="mb-7 flex items-start justify-between gap-5">
-                    <div className={`flex h-16 w-16 items-center justify-center bg-gradient-to-br ${profile.color} shadow-xl shadow-black/30`}>
-                      <profile.Icon className="h-8 w-8 text-[#080b14]" />
-                    </div>
-                    <ArrowUpRight className="h-6 w-6 text-white/35 transition-all group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-white" />
-                  </div>
-
-                  <h3 className="text-2xl font-semibold text-white">{profile.platform}</h3>
-                  <p className="mb-7 text-sm text-muted-foreground">@{profile.username}</p>
-
-                  <div className="space-y-4">
-                    {profile.stats.map((stat) => (
-                      <div key={stat.label} className="flex items-center justify-between border-b border-white/10 pb-3 last:border-b-0">
-                        <span className="text-sm text-muted-foreground">{stat.label}</span>
-                        <span className={`text-lg font-semibold ${profile.accent}`}>{isLoading ? '--' : stat.value}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </motion.a>
+                profile={profile}
+                isInView={isInView}
+                isLoading={isLoading}
+                index={index}
+              />
             ))}
           </div>
 
@@ -369,7 +369,7 @@ export function GithubSection() {
             initial={{ opacity: 0, y: 42 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.75, delay: 0.2 }}
-            className="border border-white/10 bg-[#0c1020]/92 p-7 shadow-2xl shadow-black/35 backdrop-blur-xl"
+            className="min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[#0c1020]/92 p-5 shadow-2xl shadow-black/35 backdrop-blur-xl sm:p-7"
           >
             <div className="mb-7 flex flex-wrap items-center justify-between gap-4">
               <div>
@@ -380,7 +380,8 @@ export function GithubSection() {
                 href={`https://github.com/${GITHUB_USERNAME}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-semibold text-cyan-200 transition-colors hover:bg-white/[0.1]"
+                aria-label={`Open ${GITHUB_USERNAME} on GitHub`}
+                className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.05] px-4 py-2 text-sm font-semibold text-cyan-200 transition-colors hover:bg-white/[0.1] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300"
               >
                 GitHub <ArrowUpRight className="h-4 w-4" />
               </a>
@@ -389,7 +390,7 @@ export function GithubSection() {
             <div className="grid gap-4">
               {isLoading ? (
                 [...Array(4)].map((_, index) => (
-                  <div key={index} className="h-[86px] animate-pulse border border-white/10 bg-white/[0.04]" />
+                  <div key={index} className="h-[94px] animate-pulse rounded-xl border border-white/10 bg-white/[0.04]" />
                 ))
               ) : githubStats.commits.length ? (
                 githubStats.commits.map((commit, index) => (
@@ -398,15 +399,15 @@ export function GithubSection() {
                     initial={{ opacity: 0, x: -18 }}
                     animate={isInView ? { opacity: 1, x: 0 } : {}}
                     transition={{ duration: 0.45, delay: index * 0.08 + 0.32 }}
-                    className="group/commit flex gap-4 border border-white/10 bg-white/[0.035] p-4 transition-colors hover:border-cyan-300/35 hover:bg-cyan-300/[0.06]"
+                    className="group/commit flex min-w-0 gap-4 rounded-xl border border-white/10 bg-white/[0.035] p-4 transition-colors hover:border-cyan-300/35 hover:bg-cyan-300/[0.06]"
                   >
-                    <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center bg-cyan-300/12 text-cyan-200">
+                    <div className="mt-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-cyan-300/12 text-cyan-200">
                       <GitCommitHorizontal className="h-5 w-5" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-base font-semibold text-white">{commit.message}</p>
+                      <p className="line-clamp-2 break-words text-base font-semibold text-white sm:truncate">{commit.message}</p>
                       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-                        <span>{commit.repo}</span>
+                        <span className="max-w-full truncate">{commit.repo}</span>
                         <span className="h-1 w-1 rounded-full bg-white/30" />
                         <span>{formatDate(commit.date)}</span>
                       </div>
@@ -414,7 +415,7 @@ export function GithubSection() {
                   </motion.div>
                 ))
               ) : (
-                <div className="border border-white/10 bg-white/[0.035] p-6 text-muted-foreground">
+                <div className="rounded-xl border border-white/10 bg-white/[0.035] p-6 text-muted-foreground">
                   Latest public commits could not be loaded right now.
                 </div>
               )}
@@ -425,8 +426,33 @@ export function GithubSection() {
         <motion.div
           initial={{ opacity: 0, y: 42 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.75, delay: 0.36 }}
-          className="mt-6 grid gap-4 border border-white/10 bg-gradient-to-r from-cyan-500/10 via-white/[0.035] to-amber-500/10 p-6 shadow-2xl shadow-black/20 md:grid-cols-4"
+          transition={{ duration: 0.75, delay: 0.3 }}
+          className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]"
+        >
+          <LeetCodeBreakdown leetcodeStats={leetcodeStats} isLoading={isLoading} />
+          <div className="rounded-2xl border border-white/10 bg-[#101426]/80 p-5 shadow-2xl shadow-black/25 backdrop-blur-xl sm:p-6">
+            <div className="mb-5 flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-300/12 text-cyan-200">
+                <Github className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="text-xl font-semibold text-white">GitHub Snapshot</h3>
+                <p className="text-sm text-muted-foreground">Key account signals from the existing live API calls.</p>
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+              <MiniMetric label="Repos" value={isLoading ? '--' : formatNumber(githubStats.profile?.public_repos)} />
+              <MiniMetric label="Stars" value={isLoading ? '--' : formatNumber(githubStats.stars)} />
+              <MiniMetric label="Followers" value={isLoading ? '--' : formatNumber(githubStats.profile?.followers)} />
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 42 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.75, delay: 0.42 }}
+          className="mt-6 grid gap-4 rounded-2xl border border-white/10 bg-gradient-to-r from-cyan-500/10 via-white/[0.035] to-amber-500/10 p-4 shadow-2xl shadow-black/20 sm:p-6 md:grid-cols-2 xl:grid-cols-4"
         >
           <StatTile Icon={Github} label="Repositories" value={isLoading ? '--' : formatNumber(githubStats.profile?.public_repos)} />
           <StatTile Icon={Star} label="GitHub Stars" value={isLoading ? '--' : formatNumber(githubStats.stars)} />
@@ -440,17 +466,135 @@ export function GithubSection() {
   );
 }
 
+function ProfileOverviewCard({
+  profile,
+  isInView,
+  isLoading,
+  index,
+}: {
+  profile: ProfileCard;
+  isInView: boolean;
+  isLoading: boolean;
+  index: number;
+}) {
+  return (
+    <motion.a
+      href={profile.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, y: 42 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.75, delay: index * 0.14 }}
+      whileHover={{ y: -8 }}
+      whileTap={{ scale: 0.98 }}
+      aria-label={`Open ${profile.platform} profile for ${profile.username}`}
+      className="group relative min-w-0 overflow-hidden rounded-2xl border border-white/10 bg-[#101426]/90 p-5 shadow-2xl shadow-black/30 backdrop-blur-xl transition-colors hover:border-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300 sm:p-7"
+    >
+      <div className={`absolute -right-14 -top-16 h-40 w-40 bg-gradient-to-br ${profile.color} opacity-20 blur-3xl transition-opacity group-hover:opacity-30`} />
+      <div className="relative z-10">
+        <div className="mb-7 flex items-start justify-between gap-5">
+          <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${profile.color} shadow-xl shadow-black/30 sm:h-16 sm:w-16`}>
+            <profile.Icon className="h-7 w-7 text-[#080b14] sm:h-8 sm:w-8" />
+          </div>
+          <ArrowUpRight className="h-6 w-6 shrink-0 text-white/35 transition-all group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-white" />
+        </div>
+
+        <h3 className="text-2xl font-semibold text-white">{profile.platform}</h3>
+        <p className="mt-1 break-all text-sm text-muted-foreground">@{profile.username}</p>
+        <p className="mt-3 min-h-10 text-sm leading-relaxed text-white/50">{profile.summary}</p>
+
+        <div className="mt-7 grid gap-3">
+          {profile.stats.map((stat) => (
+            <div key={stat.label} className="flex min-w-0 items-center justify-between gap-4 rounded-xl border border-white/10 bg-white/[0.045] px-4 py-3">
+              <span className="inline-flex min-w-0 items-center gap-3 text-sm text-muted-foreground">
+                <stat.Icon className="h-4 w-4 shrink-0 text-white/45" />
+                <span className="truncate">{stat.label}</span>
+              </span>
+              <span className={`shrink-0 text-lg font-semibold ${profile.accent}`}>{isLoading ? '--' : stat.value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </motion.a>
+  );
+}
+
+function LeetCodeBreakdown({
+  leetcodeStats,
+  isLoading,
+}: {
+  leetcodeStats: LeetCodeStats;
+  isLoading: boolean;
+}) {
+  const difficulties = [
+    { label: 'Easy', value: leetcodeStats.easySolved, color: 'bg-emerald-300' },
+    { label: 'Medium', value: leetcodeStats.mediumSolved, color: 'bg-amber-300' },
+    { label: 'Hard', value: leetcodeStats.hardSolved, color: 'bg-rose-300' },
+  ];
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-[#101426]/80 p-5 shadow-2xl shadow-black/25 backdrop-blur-xl sm:p-6">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-300/14 text-amber-200">
+            <Code2 className="h-5 w-5" />
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold text-white">LeetCode Breakdown</h3>
+            <p className="text-sm text-muted-foreground">Difficulty split from available solved counts.</p>
+          </div>
+        </div>
+        <span className="rounded-full border border-amber-300/20 bg-amber-300/10 px-4 py-2 text-sm font-semibold text-amber-200">
+          {isLoading ? '--' : `${formatNumber(leetcodeStats.totalSolved)} solved`}
+        </span>
+      </div>
+
+      <div className="space-y-4">
+        {difficulties.map((difficulty) => {
+          const width = isLoading ? 0 : getSolvedPercentage(difficulty.value, leetcodeStats.totalSolved);
+
+          return (
+            <div key={difficulty.label}>
+              <div className="mb-2 flex items-center justify-between gap-4 text-sm">
+                <span className="font-semibold text-white/80">{difficulty.label}</span>
+                <span className="text-muted-foreground">{isLoading ? '--' : formatNumber(difficulty.value)}</span>
+              </div>
+              <div className="h-2 overflow-hidden rounded-full bg-white/10" role="presentation">
+                <motion.div
+                  className={`h-full rounded-full ${difficulty.color}`}
+                  initial={{ width: 0 }}
+                  animate={isLoading ? { width: 0 } : { width: `${width}%` }}
+                  transition={{ duration: 0.8, ease: 'easeOut' }}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function MiniMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+      <p className="text-2xl font-semibold text-white">{value}</p>
+      <p className="mt-1 text-xs font-semibold uppercase tracking-[0.2em] text-white/45">{label}</p>
+    </div>
+  );
+}
+
 function StatTile({
   Icon,
   label,
   value,
 }: {
-  Icon: typeof Github;
+  Icon: LucideIcon;
   label: string;
   value: string;
 }) {
   return (
-    <motion.div whileHover={{ y: -5 }} className="border border-white/10 bg-black/18 p-5 text-center">
+    <motion.div whileHover={{ y: -5 }} className="rounded-xl border border-white/10 bg-black/18 p-5 text-center">
       <Icon className="mx-auto mb-3 h-7 w-7 text-cyan-200" />
       <p className="mb-1 text-3xl font-semibold text-white">{value}</p>
       <p className="text-sm text-muted-foreground">{label}</p>

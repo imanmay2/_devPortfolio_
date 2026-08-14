@@ -27,6 +27,7 @@ const navItems = [
   { label: 'Skills', id: 'skills' },
   { label: 'Projects', id: 'projects' },
   { label: 'Experience', id: 'experience' },
+  { label: 'Achievements', id: 'achievements' },
   { label: 'Profiles', id: 'profiles' },
   { label: 'Contact', id: 'contact' },
 ];
@@ -95,7 +96,7 @@ export function HeroSection() {
           </span>
         </button>
 
-        <div className="hidden items-center gap-7 lg:flex">
+        <div className="hidden items-center gap-5 xl:gap-7 lg:flex">
           {navItems.map((item) => (
             <button
               key={item.id}

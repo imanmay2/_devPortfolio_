@@ -5,6 +5,7 @@ import { AboutSection } from './components/AboutSection';
 import { SkillsSection } from './components/SkillsSection';
 import { ProjectsSection } from './components/ProjectsSection';
 import { ExperienceSection } from './components/ExperienceSection';
+import { AchievementsSection } from './components/AchievementsSection';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { GithubSection } from './components/GithubSection';
 import { ContactSection } from './components/ContactSection';
@@ -23,6 +24,7 @@ export default function App() {
           <SkillsSection />
           <ProjectsSection />
           <ExperienceSection />
+          <AchievementsSection />
           <TestimonialsSection />
           <GithubSection />
           <ContactSection />
