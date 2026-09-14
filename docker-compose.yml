@@ -1,0 +1,23 @@
+services:
+  # Production build served by nginx. Use this to just look at the site.
+  #   docker compose up --build web   ->  http://localhost:8080
+  web:
+    build:
+      context: .
+      target: prod
+    ports:
+      - "8080:80"
+
+  # Vite dev server with hot reload. Source is bind-mounted, but node_modules
+  # stays in its own volume so the host (which has none) cannot shadow it.
+  #   docker compose up --build dev   ->  http://localhost:5173
+  dev:
+    build:
+      context: .
+      target: dev
+    ports:
+      - "5173:5173"
+    environment:
+      # Bind-mounted files on macOS/Windows do not emit inotify events, so the
+      # watcher has to poll to notice your edits. Read by vite.config.ts.
+      - VITE_POLL=true

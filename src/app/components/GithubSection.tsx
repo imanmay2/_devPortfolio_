@@ -19,7 +19,7 @@ import {
 import { useInView } from './hooks/useInView';
 
 const GITHUB_USERNAME = 'imanmay2';
-const LEETCODE_USERNAME = 'imanmay2';
+const LEETCODE_USERNAME = 'savage_code';
 
 type GitHubProfile = {
   public_repos: number;
@@ -320,8 +320,8 @@ export function GithubSection() {
   );
 
   return (
-    <section id="profiles" ref={ref} className="relative overflow-hidden px-6 py-28 md:py-32">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(34,211,238,0.12),transparent_28%),radial-gradient(circle_at_84%_32%,rgba(251,191,36,0.12),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.02),rgba(12,15,28,0.82),rgba(255,255,255,0.02))]" />
+    <section id="profiles" ref={ref} className="relative overflow-hidden px-5 py-28 sm:px-6 md:py-32">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_18%,rgba(34,211,238,0.11),transparent_28%),radial-gradient(circle_at_84%_32%,rgba(251,191,36,0.10),transparent_28%)]" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent" />
 
       <div className="relative z-10 mx-auto max-w-6xl">
@@ -331,21 +331,23 @@ export function GithubSection() {
           transition={{ duration: 0.8 }}
           className="mb-16"
         >
-          <div className="mb-6 inline-flex items-center gap-3 border border-white/10 bg-white/[0.04] px-5 py-3 backdrop-blur-xl">
-            <GitPullRequest className="h-5 w-5 text-cyan-300" />
-            <span className="text-sm font-semibold uppercase tracking-[0.24em] text-white/70">Live Coding Stats</span>
+          <div className="section-kicker mb-6">
+            <GitPullRequest className="h-4 w-4 text-cyan-300" />
+            <span>Live Coding Stats</span>
           </div>
           <div className="flex flex-wrap items-end justify-between gap-6">
             <div>
-              <h2 className="bg-gradient-to-r from-cyan-300 via-white to-amber-300 bg-clip-text text-5xl font-bold text-transparent md:text-6xl">
-                Coding Profiles
+              <h2 className="section-title">
+                <span className="bg-gradient-to-r from-cyan-300 via-white to-amber-300 bg-clip-text text-transparent">
+                  Coding Profiles
+                </span>
               </h2>
-              <p className="mt-4 max-w-2xl text-xl text-muted-foreground">
+              <p className="section-copy mt-4 max-w-2xl">
                 Fresh GitHub activity and LeetCode progress, pulled live when the page loads.
               </p>
             </div>
 
-            <div className="flex items-center gap-2 border border-white/10 bg-black/25 px-4 py-3 text-sm text-white/65">
+            <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-black/25 px-4 py-3 text-sm text-white/65 backdrop-blur-xl">
               {isLoading ? <Loader2 className="h-4 w-4 animate-spin text-cyan-300" /> : <RefreshCw className="h-4 w-4 text-emerald-300" />}
               {isLoading ? 'Updating now' : updatedAt ? `Updated ${updatedAt}` : 'Live data'}
             </div>
@@ -373,7 +375,7 @@ export function GithubSection() {
           >
             <div className="mb-7 flex flex-wrap items-center justify-between gap-4">
               <div>
-                <h3 className="text-2xl font-semibold text-white">Latest GitHub Commits</h3>
+                <h3 className="font-display text-2xl font-semibold text-white">Latest GitHub Commits</h3>
                 <p className="mt-1 text-sm text-muted-foreground">Recent public push activity from @{GITHUB_USERNAME}</p>
               </div>
               <a
@@ -436,7 +438,7 @@ export function GithubSection() {
                 <Github className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-white">GitHub Snapshot</h3>
+                <h3 className="font-display text-xl font-semibold text-white">GitHub Snapshot</h3>
                 <p className="text-sm text-muted-foreground">Key account signals from the existing live API calls.</p>
               </div>
             </div>
@@ -499,7 +501,7 @@ function ProfileOverviewCard({
           <ArrowUpRight className="h-6 w-6 shrink-0 text-white/35 transition-all group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:text-white" />
         </div>
 
-        <h3 className="text-2xl font-semibold text-white">{profile.platform}</h3>
+        <h3 className="font-display text-2xl font-semibold text-white">{profile.platform}</h3>
         <p className="mt-1 break-all text-sm text-muted-foreground">@{profile.username}</p>
         <p className="mt-3 min-h-10 text-sm leading-relaxed text-white/50">{profile.summary}</p>
 
@@ -540,7 +542,7 @@ function LeetCodeBreakdown({
             <Code2 className="h-5 w-5" />
           </div>
           <div>
-            <h3 className="text-xl font-semibold text-white">LeetCode Breakdown</h3>
+            <h3 className="font-display text-xl font-semibold text-white">LeetCode Breakdown</h3>
             <p className="text-sm text-muted-foreground">Difficulty split from available solved counts.</p>
           </div>
         </div>

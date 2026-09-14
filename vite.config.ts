@@ -31,6 +31,13 @@ export default defineConfig({
     },
   },
 
+  server: {
+    // Bind-mounted files inside a container do not emit inotify events on
+    // macOS or Windows, so the watcher has to poll to see edits. Opt-in via
+    // VITE_POLL=true (set by docker-compose) so local dev is unaffected.
+    watch: process.env.VITE_POLL ? { usePolling: true, interval: 300 } : undefined,
+  },
+
   // File types to support raw imports. Never add .css, .tsx, or .ts files to this.
   assetsInclude: ['**/*.svg', '**/*.csv'],
 })

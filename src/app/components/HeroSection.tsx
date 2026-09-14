@@ -1,5 +1,12 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'motion/react';
+import { useEffect, useRef, useState } from 'react';
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'motion/react';
 import {
   ArrowDown,
   ArrowUpRight,
@@ -8,13 +15,15 @@ import {
   Github,
   Linkedin,
   Mail,
-  Menu,
   Server,
-  Sparkles,
 } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+import { SplitText } from './shared/SplitText';
+import { Magnetic } from './shared/Magnetic';
+import { scrollToSection } from './Navbar';
+import { useBoot } from './shared/BootContext';
 
-const roles = [
+const ROLES = [
   'Full Stack Engineer',
   'Backend Developer',
   'Next.js Developer',
@@ -22,187 +31,160 @@ const roles = [
   'AI/ML Explorer',
 ];
 
-const navItems = [
-  { label: 'About', id: 'about' },
-  { label: 'Skills', id: 'skills' },
-  { label: 'Projects', id: 'projects' },
-  { label: 'Experience', id: 'experience' },
-  { label: 'Achievements', id: 'achievements' },
-  { label: 'Profiles', id: 'profiles' },
-  { label: 'Contact', id: 'contact' },
-];
-
-const profilePins = [
+const PROFILE_PINS = [
   { label: 'Backend', Icon: Server, className: '-left-7 top-12', delay: 0 },
   { label: 'Frontend', Icon: Braces, className: '-right-7 top-[42%]', delay: 0.2 },
   { label: 'AI/ML', Icon: BrainCircuit, className: '-left-6 bottom-24', delay: 0.4 },
 ];
 
-export function HeroSection() {
+const SOCIALS = [
+  { Icon: Github, href: 'https://github.com/imanmay2', label: 'GitHub' },
+  { Icon: Linkedin, href: 'https://www.linkedin.com/in/imanmay2/', label: 'LinkedIn' },
+  { Icon: Mail, href: 'mailto:imanmay2@gmail.com', label: 'Email' },
+];
+
+const HIGHLIGHTS = [
+  { value: '10+', label: 'Shipped projects' },
+  { value: '36+', label: 'Tools in rotation' },
+  { value: '3+', label: 'Years building' },
+];
+
+/** Types a role out, holds, deletes, then advances to the next one. */
+function useTypedRole() {
   const [roleIndex, setRoleIndex] = useState(0);
-  const [displayedText, setDisplayedText] = useState('');
+  const [text, setText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
-    const currentRole = roles[roleIndex];
+    const role = ROLES[roleIndex];
     const timeout = setTimeout(
       () => {
         if (!isDeleting) {
-          if (displayedText.length < currentRole.length) {
-            setDisplayedText(currentRole.slice(0, displayedText.length + 1));
+          if (text.length < role.length) {
+            setText(role.slice(0, text.length + 1));
           } else {
             setTimeout(() => setIsDeleting(true), 1800);
           }
-        } else if (displayedText.length > 0) {
-          setDisplayedText(displayedText.slice(0, -1));
+        } else if (text.length > 0) {
+          setText(text.slice(0, -1));
         } else {
           setIsDeleting(false);
-          setRoleIndex((prev) => (prev + 1) % roles.length);
+          setRoleIndex((previous) => (previous + 1) % ROLES.length);
         }
       },
       isDeleting ? 42 : 82
     );
 
     return () => clearTimeout(timeout);
-  }, [displayedText, isDeleting, roleIndex]);
+  }, [text, isDeleting, roleIndex]);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentSection = [...navItems].reverse().find((item) => {
-        const element = document.getElementById(item.id);
-        if (!element) return false;
-        return element.getBoundingClientRect().top <= 140;
-      });
+  return text;
+}
 
-      setActiveSection(currentSection?.id ?? 'hero');
-    };
+export function HeroSection() {
+  const isBooted = useBoot();
+  const typedRole = useTypedRole();
+  const shouldReduceMotion = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
 
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
+  // Pointer parallax for the portrait cluster.
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
+  const springConfig = { stiffness: 90, damping: 20, mass: 0.6 };
+  const tiltX = useSpring(useTransform(pointerY, [-0.5, 0.5], [8, -8]), springConfig);
+  const tiltY = useSpring(useTransform(pointerX, [-0.5, 0.5], [-10, 10]), springConfig);
+  const shiftX = useSpring(useTransform(pointerX, [-0.5, 0.5], [-14, 14]), springConfig);
 
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  // Scroll parallax: the hero settles back as the next section arrives.
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  });
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, 110]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
 
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    element?.scrollIntoView({ behavior: 'smooth' });
-    setIsMenuOpen(false);
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (shouldReduceMotion) return;
+
+    const bounds = event.currentTarget.getBoundingClientRect();
+    pointerX.set((event.clientX - bounds.left) / bounds.width - 0.5);
+    pointerY.set((event.clientY - bounds.top) / bounds.height - 0.5);
+  };
+
+  const resetPointer = () => {
+    pointerX.set(0);
+    pointerY.set(0);
   };
 
   return (
-    <section id="hero" className="relative min-h-screen overflow-hidden px-5 pb-24 pt-5 sm:px-6 md:pt-7">
-      <div className="absolute inset-0 bg-[#070913]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(56,189,248,0.15),transparent_29%),radial-gradient(circle_at_70%_18%,rgba(168,85,247,0.13),transparent_30%),radial-gradient(circle_at_78%_84%,rgba(236,72,153,0.09),transparent_34%)]" />
-      <div className="absolute inset-0 opacity-[0.055] [background-image:linear-gradient(rgba(255,255,255,.9)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.9)_1px,transparent_1px)] [background-size:80px_80px]" />
-      <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-b from-transparent to-[#090a12]" />
+    <section
+      id="hero"
+      ref={sectionRef}
+      className="relative min-h-screen overflow-hidden px-5 pb-24 pt-28 sm:px-6 md:pt-32"
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(56,189,248,0.14),transparent_30%),radial-gradient(circle_at_72%_16%,rgba(168,85,247,0.13),transparent_31%),radial-gradient(circle_at_78%_84%,rgba(236,72,153,0.09),transparent_34%)]" />
+      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-[#070913]" />
 
-      <motion.nav
-        initial={{ opacity: 0, y: -24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        className="sticky top-4 z-30 mx-auto flex max-w-7xl items-center justify-between rounded-2xl border border-white/10 bg-[#070913]/72 px-4 py-3 shadow-2xl shadow-black/30 backdrop-blur-2xl md:px-5"
+      <motion.div
+        style={shouldReduceMotion ? undefined : { y: heroY, opacity: heroOpacity }}
+        className="relative z-10 mx-auto grid min-h-[calc(100vh-9rem)] max-w-7xl items-center gap-12 md:grid-cols-[minmax(0,1.14fr)_minmax(260px,0.74fr)] xl:gap-16"
       >
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="premium-focus flex items-center gap-3 rounded-xl"
-          aria-label="Go to hero"
-        >
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-300 via-violet-400 to-pink-400 text-base font-black text-[#070913] shadow-lg shadow-cyan-950/25">
-            MC
-          </span>
-          <span className="hidden text-base font-semibold tracking-tight text-white sm:block">
-            Manmay Chakraborty
-          </span>
-        </button>
-
-        <div className="hidden items-center gap-5 xl:gap-7 lg:flex">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => scrollToSection(item.id)}
-              className={`premium-focus rounded-lg text-[11px] font-bold uppercase tracking-[0.22em] transition-colors ${
-                activeSection === item.id ? 'text-cyan-200' : 'text-white/50 hover:text-white'
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={() => setIsMenuOpen((value) => !value)}
-            className="premium-focus flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-white lg:hidden"
-            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={isMenuOpen}
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-        </div>
-
-        {isMenuOpen ? (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="absolute left-0 right-0 top-[calc(100%+0.75rem)] rounded-2xl border border-white/10 bg-[#090d19]/96 p-3 shadow-2xl shadow-black/40 backdrop-blur-2xl lg:hidden"
-          >
-            <div className="grid gap-1">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => scrollToSection(item.id)}
-                  className={`premium-focus flex items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-semibold transition-colors ${
-                    activeSection === item.id ? 'bg-cyan-300/10 text-cyan-100' : 'text-white/70 hover:bg-white/[0.055] hover:text-white'
-                  }`}
-                >
-                  {item.label}
-                  <ArrowUpRight className="h-4 w-4 opacity-45" />
-                </button>
-              ))}
-            </div>
-          </motion.div>
-        ) : null}
-      </motion.nav>
-
-      <div className="relative z-10 mx-auto grid min-h-[calc(100vh-112px)] max-w-7xl items-center gap-12 pt-14 md:grid-cols-[minmax(0,1.14fr)_minmax(260px,0.72fr)] xl:gap-16">
-        <motion.div
-          initial={{ opacity: 0, x: -55 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.85, delay: 0.1 }}
-          className="min-w-0"
-        >
+        <div className="min-w-0">
           <motion.div
             className="section-kicker mb-8"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.25 }}
+            initial={{ opacity: 0, y: 14 }}
+            animate={isBooted ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+            transition={{ delay: 0.15, duration: 0.6 }}
           >
-            <Sparkles className="h-5 w-5 text-yellow-300" />
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-70" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-300" />
+            </span>
             <span>Available for new opportunities</span>
           </motion.div>
 
-          <p className="mb-4 text-sm font-bold uppercase tracking-[0.36em] text-cyan-200/70">
+          <motion.p
+            className="font-code mb-4 text-xs font-semibold uppercase tracking-[0.36em] text-cyan-200/70"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isBooted ? 1 : 0 }}
+            transition={{ delay: 0.25, duration: 0.6 }}
+          >
             Hi, I am
-          </p>
+          </motion.p>
 
-          <h1 className="max-w-[900px] text-[clamp(3.35rem,11vw,8.15rem)] font-black leading-[0.92] tracking-tight">
-            <span className="block bg-gradient-to-r from-cyan-300 via-violet-300 to-fuchsia-400 bg-clip-text text-transparent">
-              Manmay
+          <h1 className="font-display max-w-[900px] text-[clamp(3.1rem,10.5vw,7.8rem)] font-black leading-[0.9] tracking-[-0.03em]">
+            <span className="relative block">
+              <SplitText
+                text="Manmay"
+                play={isBooted}
+                delay={0.3}
+                className="block bg-gradient-to-r from-cyan-300 via-violet-300 to-fuchsia-400 bg-clip-text text-transparent"
+              />
+              {/* Specular pass over the finished headline. */}
+              <span
+                aria-hidden="true"
+                className="text-sheen pointer-events-none absolute inset-0 block text-transparent"
+              >
+                Manmay
+              </span>
             </span>
-            <span className="block bg-gradient-to-r from-fuchsia-400 via-purple-300 to-sky-300 bg-clip-text text-transparent">
-              Chakraborty
-            </span>
+            <SplitText
+              text="Chakraborty"
+              play={isBooted}
+              delay={0.5}
+              className="block bg-gradient-to-r from-fuchsia-400 via-purple-300 to-sky-300 bg-clip-text text-transparent"
+            />
           </h1>
 
-          <div className="mt-8 flex min-h-16 flex-wrap items-center text-2xl font-bold sm:text-3xl md:text-5xl">
-            <span className="text-white/48">I build as a&nbsp;</span>
+          <motion.div
+            className="font-display mt-8 flex min-h-16 flex-wrap items-center text-2xl font-bold sm:text-3xl md:text-5xl"
+            initial={{ opacity: 0, y: 18 }}
+            animate={isBooted ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+            transition={{ delay: 0.95, duration: 0.6 }}
+          >
+            <span className="text-white/45">I build as a&nbsp;</span>
             <span className="bg-gradient-to-r from-cyan-300 to-violet-400 bg-clip-text text-transparent">
-              {displayedText}
+              {typedRole}
             </span>
             <motion.span
               className="ml-1 text-cyan-300"
@@ -211,67 +193,106 @@ export function HeroSection() {
             >
               |
             </motion.span>
-          </div>
+          </motion.div>
 
-          <p className="mt-8 max-w-2xl text-lg leading-relaxed text-slate-300 md:text-2xl">
-            I craft fast full-stack products with clean interfaces, dependable APIs, and backend systems that are built
-            to scale.
-          </p>
+          <motion.p
+            className="mt-8 max-w-2xl text-lg leading-relaxed text-slate-300/90 md:text-xl"
+            initial={{ opacity: 0, y: 18 }}
+            animate={isBooted ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+            transition={{ delay: 1.05, duration: 0.6 }}
+          >
+            I craft fast full-stack products with clean interfaces, dependable APIs, and backend systems that are
+            built to scale.
+          </motion.p>
 
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <motion.button
-              onClick={() => scrollToSection('projects')}
-              whileHover={{ y: -4, scale: 1.02 }}
-              whileTap={{ scale: 0.97 }}
-              className="premium-focus group inline-flex items-center gap-3 rounded-xl bg-gradient-to-r from-cyan-400 via-violet-500 to-pink-500 px-6 py-3.5 font-bold text-white shadow-2xl shadow-purple-950/40 sm:px-7 sm:py-4"
-            >
-              View Projects
-              <ArrowUpRight className="h-5 w-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-            </motion.button>
-            <motion.button
-              onClick={() => scrollToSection('contact')}
-              whileHover={{ y: -4, scale: 1.02 }}
-              whileTap={{ scale: 0.97 }}
-              className="premium-focus rounded-xl border border-white/15 bg-white/[0.04] px-6 py-3.5 font-bold text-white backdrop-blur-xl transition-colors hover:bg-white/[0.08] sm:px-7 sm:py-4"
-            >
-              Contact Me
-            </motion.button>
-          </div>
+          <motion.div
+            className="mt-10 flex flex-wrap items-center gap-4"
+            initial={{ opacity: 0, y: 18 }}
+            animate={isBooted ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+            transition={{ delay: 1.15, duration: 0.6 }}
+          >
+            <Magnetic strength={12}>
+              <button
+                type="button"
+                onClick={() => scrollToSection('projects')}
+                data-cursor="view"
+                className="premium-focus group relative inline-flex items-center gap-3 overflow-hidden rounded-xl bg-gradient-to-r from-cyan-400 via-violet-500 to-pink-500 px-6 py-3.5 font-bold text-white shadow-2xl shadow-purple-950/40 sm:px-7 sm:py-4"
+              >
+                {/* Light sweeps across the button on hover. */}
+                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/35 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                <span className="relative">View Projects</span>
+                <ArrowUpRight className="relative h-5 w-5 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+              </button>
+            </Magnetic>
 
-          <div className="mt-10 flex gap-4">
-            {[
-              { icon: Github, href: 'https://github.com/imanmay2' },
-              { icon: Linkedin, href: 'https://www.linkedin.com/in/imanmay2/' },
-              { icon: Mail, href: 'mailto:imanmay2@gmail.com' },
-            ].map((social, index) => (
+            <Magnetic strength={12}>
+              <button
+                type="button"
+                onClick={() => scrollToSection('contact')}
+                className="premium-focus rounded-xl border border-white/15 bg-white/[0.04] px-6 py-3.5 font-bold text-white backdrop-blur-xl transition-colors hover:border-white/30 hover:bg-white/[0.09] sm:px-7 sm:py-4"
+              >
+                Contact Me
+              </button>
+            </Magnetic>
+          </motion.div>
+
+          <motion.div
+            className="mt-10 flex flex-wrap items-center gap-4"
+            initial={{ opacity: 0, y: 18 }}
+            animate={isBooted ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+            transition={{ delay: 1.25, duration: 0.6 }}
+          >
+            {SOCIALS.map((social) => (
               <motion.a
-                key={index}
+                key={social.label}
                 href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.href.includes('github') ? 'Open GitHub profile' : social.href.includes('linkedin') ? 'Open LinkedIn profile' : 'Send email'}
-                className="premium-focus flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-white/70 backdrop-blur-xl transition-colors hover:border-white/20 hover:text-white"
+                target={social.href.startsWith('mailto:') ? undefined : '_blank'}
+                rel={social.href.startsWith('mailto:') ? undefined : 'noopener noreferrer'}
+                aria-label={social.label}
+                className="premium-focus flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] text-white/65 backdrop-blur-xl transition-colors hover:border-cyan-300/40 hover:text-white"
                 whileHover={{ y: -5, rotate: 4 }}
                 whileTap={{ scale: 0.92 }}
               >
-                <social.icon className="h-5 w-5" />
+                <social.Icon className="h-5 w-5" />
               </motion.a>
             ))}
-          </div>
-        </motion.div>
+
+            <span className="hidden h-10 w-px bg-white/10 sm:block" />
+
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+              {HIGHLIGHTS.map((item) => (
+                <div key={item.label}>
+                  <p className="font-display text-xl font-black text-white">{item.value}</p>
+                  <p className="meta-label mt-0.5">{item.label}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
 
         <motion.div
-          initial={{ opacity: 0, x: 55, scale: 0.96 }}
-          animate={{ opacity: 1, x: 0, scale: 1 }}
-          transition={{ duration: 0.9, delay: 0.2 }}
+          initial={{ opacity: 0, x: 48, scale: 0.95 }}
+          animate={isBooted ? { opacity: 1, x: 0, scale: 1 } : { opacity: 0, x: 48, scale: 0.95 }}
+          transition={{ duration: 0.9, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          onPointerMove={handlePointerMove}
+          onPointerLeave={resetPointer}
           className="group relative mx-auto w-full max-w-[330px] justify-self-center md:mx-0 md:justify-self-end lg:max-w-[390px] xl:max-w-[430px]"
+          style={{ perspective: 1200 }}
         >
           <motion.div
-            className="absolute -inset-6 rounded-[2rem] bg-gradient-to-br from-cyan-400/20 via-purple-500/18 to-pink-500/16 blur-3xl"
+            className="absolute -inset-6 rounded-[2rem] bg-gradient-to-br from-cyan-400/22 via-purple-500/18 to-pink-500/16 blur-3xl"
             animate={{ scale: [1, 1.08, 1], opacity: [0.55, 0.85, 0.55] }}
             transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut' }}
           />
-          <div className="relative rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-3 shadow-2xl shadow-black/40 backdrop-blur-2xl transition-transform duration-500 ease-out group-hover:scale-[1.025] sm:p-4">
+
+          <motion.div
+            style={
+              shouldReduceMotion
+                ? undefined
+                : { rotateX: tiltX, rotateY: tiltY, transformStyle: 'preserve-3d' }
+            }
+            className="relative rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-3 shadow-2xl shadow-black/50 backdrop-blur-2xl sm:p-4"
+          >
             <div className="relative aspect-[4/5] overflow-hidden rounded-[1.25rem] bg-[#101426]">
               <ImageWithFallback
                 src="/images/manmay-profile.png"
@@ -279,24 +300,32 @@ export function HeroSection() {
                 className="h-full w-full object-cover grayscale contrast-110 transition-all duration-700 ease-out group-hover:grayscale-0 group-hover:contrast-100 group-hover:saturate-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#070913] via-transparent to-transparent" />
-              <div className="absolute inset-0 mix-blend-screen bg-[radial-gradient(circle_at_70%_28%,rgba(34,211,238,0.28),transparent_24%),radial-gradient(circle_at_20%_82%,rgba(236,72,153,0.28),transparent_28%)]" />
-            </div>
-          </div>
+              <div className="absolute inset-0 mix-blend-screen bg-[radial-gradient(circle_at_70%_28%,rgba(34,211,238,0.26),transparent_24%),radial-gradient(circle_at_20%_82%,rgba(236,72,153,0.26),transparent_28%)]" />
 
-          {profilePins.map((pin) => (
+              {/* Scanline sweep, slow enough to read as ambience. */}
+              <motion.div
+                className="absolute inset-x-0 h-24 bg-gradient-to-b from-transparent via-cyan-200/10 to-transparent"
+                animate={{ y: ['-20%', '420%'] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
+              />
+            </div>
+          </motion.div>
+
+          {PROFILE_PINS.map((pin) => (
             <motion.div
               key={pin.label}
-              className={`absolute hidden items-center gap-3 rounded-xl border border-white/10 bg-black/80 px-4 py-3 shadow-2xl shadow-black/30 backdrop-blur-xl md:flex ${pin.className}`}
+              className={`absolute hidden items-center gap-3 rounded-xl border border-white/10 bg-black/80 px-4 py-3 shadow-2xl shadow-black/40 backdrop-blur-xl md:flex ${pin.className}`}
               initial={{ opacity: 0, scale: 0.9, y: 16 }}
-              animate={{ opacity: 1, scale: 1, y: [0, -8, 0] }}
+              animate={isBooted ? { opacity: 1, scale: 1, y: [0, -8, 0] } : { opacity: 0, scale: 0.9, y: 16 }}
+              style={shouldReduceMotion ? undefined : { x: shiftX }}
               transition={{
-                opacity: { duration: 0.45, delay: 0.65 + pin.delay },
-                scale: { duration: 0.45, delay: 0.65 + pin.delay },
+                opacity: { duration: 0.45, delay: 0.85 + pin.delay },
+                scale: { duration: 0.45, delay: 0.85 + pin.delay },
                 y: { duration: 3.4 + pin.delay, repeat: Infinity, ease: 'easeInOut' },
               }}
             >
               <pin.Icon className="h-5 w-5 text-cyan-300" />
-              <span className="font-bold text-white">{pin.label}</span>
+              <span className="text-sm font-bold text-white">{pin.label}</span>
             </motion.div>
           ))}
 
@@ -305,21 +334,24 @@ export function HeroSection() {
             animate={{ y: [0, 12, 0] }}
             transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <p className="text-3xl font-black text-white">10+</p>
-            <p className="text-xs uppercase tracking-[0.24em] text-white/45">Projects</p>
+            <p className="font-display text-3xl font-black text-white">10+</p>
+            <p className="meta-label mt-1">Projects</p>
           </motion.div>
         </motion.div>
-      </div>
+      </motion.div>
 
-      <motion.button
-        onClick={() => scrollToSection('about')}
-        className="absolute bottom-8 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-2 text-sm text-white/45 md:flex"
-        animate={{ y: [0, 12, 0] }}
-        transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-      >
-        <span>Scroll to explore</span>
-        <ArrowDown className="h-5 w-5 text-cyan-300" />
-      </motion.button>
+      <div className="absolute inset-x-0 bottom-8 z-20 hidden justify-center md:flex">
+        <motion.button
+          type="button"
+          onClick={() => scrollToSection('about')}
+          className="premium-focus flex flex-col items-center gap-2 text-xs uppercase tracking-[0.22em] text-white/40 transition-colors hover:text-white/70"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+        >
+          <span>Scroll to explore</span>
+          <ArrowDown className="h-5 w-5 text-cyan-300" />
+        </motion.button>
+      </div>
     </section>
   );
 }

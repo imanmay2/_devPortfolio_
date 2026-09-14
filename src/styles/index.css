@@ -2,24 +2,45 @@
 @import './tailwind.css';
 @import './theme.css';
 
-/* Smooth scrolling */
+/* ------------------------------------------------------------------ *
+ * Document shell
+ * ------------------------------------------------------------------ */
+
 html {
   scroll-behavior: smooth;
   background: #070913;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
   min-width: 320px;
   overflow-x: hidden;
-  background:
-    radial-gradient(circle at 18% 0%, rgba(34, 211, 238, 0.08), transparent 28rem),
-    radial-gradient(circle at 82% 8%, rgba(168, 85, 247, 0.08), transparent 30rem),
-    linear-gradient(180deg, #070913 0%, #090b14 42%, #070913 100%);
+  background: #070913;
+  font-family: var(--font-body);
 }
 
 #root {
   isolation: isolate;
 }
+
+/* The animated aurora lives in a fixed layer behind everything, so the
+   page scrolls over a continuous field instead of re-drawing per section. */
+.app-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.app-shell {
+  position: relative;
+  z-index: 1;
+}
+
+/* ------------------------------------------------------------------ *
+ * Layout + surface primitives
+ * ------------------------------------------------------------------ */
 
 @layer components {
   .portfolio-section {
@@ -35,7 +56,8 @@ body {
   }
 
   .section-title {
-    @apply text-4xl font-bold leading-tight tracking-tight text-white md:text-6xl;
+    font-family: var(--font-display);
+    @apply text-4xl font-bold leading-[1.05] tracking-tight text-white md:text-6xl;
   }
 
   .section-title-gradient {
@@ -53,27 +75,82 @@ body {
   .premium-focus {
     @apply focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-300;
   }
+
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-code {
+    font-family: var(--font-code);
+  }
+
+  /* Small uppercase technical label used for metadata across sections. */
+  .meta-label {
+    font-family: var(--font-code);
+    @apply text-[10px] font-semibold uppercase tracking-[0.28em] text-white/40;
+  }
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 10px;
+/* ------------------------------------------------------------------ *
+ * Gradient borders + spotlights
+ * ------------------------------------------------------------------ */
+
+/* A 1px gradient hairline drawn with mask-composite so the card keeps its
+   own translucent fill. Fades in on hover via --edge-opacity. */
+.edge-glow {
+  position: relative;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+.edge-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--accent-cyan), 0.75),
+    rgba(var(--accent-violet), 0.5) 45%,
+    rgba(var(--accent-pink), 0.65)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  pointer-events: none;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.5);
-  border-radius: 5px;
+.edge-glow:hover::before,
+.edge-glow:focus-within::before {
+  opacity: 1;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(59, 130, 246, 0.7);
+/* Cursor-tracked highlight. Components set --mx/--my in pointer handlers. */
+.spotlight::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    360px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255, 255, 255, 0.09),
+    transparent 62%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
-/* Gradient Animation */
+.spotlight:hover::after {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------------ *
+ * Text effects
+ * ------------------------------------------------------------------ */
+
 @keyframes gradient {
   0% {
     background-position: 0% 50%;
@@ -87,16 +164,48 @@ body {
 }
 
 .animate-gradient {
+  background-size: 220% 220%;
   animation: gradient 8s ease infinite;
 }
 
-/* Pulse Glow */
+/* A specular highlight that sweeps across gradient headlines. */
+@keyframes text-sheen {
+  0% {
+    background-position: -160% 0;
+  }
+  55%,
+  100% {
+    background-position: 260% 0;
+  }
+}
+
+.text-sheen {
+  background-image: linear-gradient(
+    100deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.72) 46%,
+    rgba(255, 255, 255, 0.95) 50%,
+    rgba(255, 255, 255, 0.72) 54%,
+    transparent 68%
+  );
+  background-size: 220% 100%;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: text-sheen 6s ease-in-out infinite;
+}
+
+/* ------------------------------------------------------------------ *
+ * Ambient motion
+ * ------------------------------------------------------------------ */
+
 @keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.35);
   }
   50% {
-    box-shadow: 0 0 40px rgba(147, 51, 234, 0.6);
+    box-shadow: 0 0 40px rgba(147, 51, 234, 0.55);
   }
 }
 
@@ -104,9 +213,9 @@ body {
   animation: pulse-glow 3s ease-in-out infinite;
 }
 
-/* Floating Animation */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px);
   }
   50% {
@@ -118,8 +227,181 @@ body {
   animation: float 3s ease-in-out infinite;
 }
 
+/* Slow drifting aurora blobs behind the whole page. */
+@keyframes aurora-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(6%, -5%, 0) scale(1.12);
+  }
+  66% {
+    transform: translate3d(-5%, 4%, 0) scale(0.94);
+  }
+}
+
+.aurora-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  will-change: transform;
+  animation: aurora-drift var(--aurora-duration, 26s) ease-in-out infinite;
+  animation-delay: var(--aurora-delay, 0s);
+}
+
+/* Fine film grain that keeps large flat gradients from banding. */
+.grain-overlay {
+  position: absolute;
+  inset: -50%;
+  opacity: 0.032;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 7s steps(6) infinite;
+  pointer-events: none;
+}
+
+@keyframes grain-shift {
+  0% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-4%, 3%);
+  }
+  40% {
+    transform: translate(3%, -4%);
+  }
+  60% {
+    transform: translate(-3%, -3%);
+  }
+  80% {
+    transform: translate(4%, 2%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Skills rail-yard marquees
+ * ------------------------------------------------------------------ */
+
+/* Each lane duplicates its cars once, so translating by -50% lands exactly
+   on the start of the copy and the loop reads as a continuous train. */
+@keyframes rail-run {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.rail-track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: rail-run var(--rail-duration, 40s) linear infinite;
+  animation-direction: var(--rail-direction, normal);
+}
+
+/* Hovering a lane brings the whole lane to a stand - carriages, sleepers and
+   signal light together - so it can actually be read. */
+.rail-lane:hover .rail-track,
+.rail-lane:focus-within .rail-track,
+.rail-lane:hover .rail-sleepers,
+.rail-lane:focus-within .rail-sleepers,
+.rail-lane:hover .rail-pulse,
+.rail-lane:focus-within .rail-pulse {
+  animation-play-state: paused;
+}
+
+/* Fades the carriages out at both ends of the lane so they appear to enter
+   and leave a tunnel rather than popping at the container edge. */
+.rail-mask {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 7%,
+    #000 93%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%);
+}
+
+/* The sleeper ties under each lane, scrolling opposite the train for depth. */
+@keyframes sleeper-run {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -48px;
+  }
+}
+
+.rail-sleepers {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.16) 0 2px,
+    transparent 2px 48px
+  );
+  animation: sleeper-run 2.4s linear infinite;
+  animation-direction: var(--rail-direction, normal);
+}
+
+/* Light pulse that travels the length of a lane's rail line. `left` is
+   animated rather than `transform`, because a percentage translate would
+   resolve against the pulse's own width instead of the lane's. */
+@keyframes rail-pulse {
+  0% {
+    left: -12%;
+    opacity: 0;
+  }
+  12%,
+  78% {
+    opacity: 1;
+  }
+  100% {
+    left: 108%;
+    opacity: 0;
+  }
+}
+
+.rail-pulse {
+  position: absolute;
+  top: 0;
+  left: -12%;
+  animation: rail-pulse var(--pulse-duration, 5s) linear infinite;
+  animation-delay: var(--pulse-delay, 0s);
+}
+
+/* Legacy hook kept so any remaining marquee markup still pauses on hover. */
 .skills-marquee:hover > div {
   animation-play-state: paused;
+}
+
+/* ------------------------------------------------------------------ *
+ * Scrollbars + selection
+ * ------------------------------------------------------------------ */
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.55), rgba(217, 70, 239, 0.55));
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0.85), rgba(217, 70, 239, 0.85));
+  background-clip: padding-box;
 }
 
 .code-panel-scroll::-webkit-scrollbar {
@@ -136,6 +418,36 @@ body {
   border-radius: 999px;
 }
 
+::selection {
+  background-color: rgba(34, 211, 238, 0.28);
+  color: #ffffff;
+}
+
+/* ------------------------------------------------------------------ *
+ * Custom cursor
+ * ------------------------------------------------------------------ */
+
+/* Only surrender the native cursor on devices that actually have one. */
+@media (hover: hover) and (pointer: fine) {
+  html.has-custom-cursor,
+  html.has-custom-cursor * {
+    cursor: none !important;
+  }
+
+  /* Text entry keeps its caret - losing the I-beam in a contact form is a
+     worse trade than any cursor effect is worth. */
+  html.has-custom-cursor input,
+  html.has-custom-cursor textarea,
+  html.has-custom-cursor select,
+  html.has-custom-cursor [contenteditable='true'] {
+    cursor: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Reduced motion
+ * ------------------------------------------------------------------ */
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -145,10 +457,16 @@ body {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
   }
-}
 
-/* Selection styles */
-::selection {
-  background-color: rgba(59, 130, 246, 0.3);
-  color: inherit;
+  .rail-track {
+    animation: none !important;
+    transform: none !important;
+  }
+
+  /* With the trains stopped, the lane becomes a plain scroller. */
+  .rail-mask {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
 }
